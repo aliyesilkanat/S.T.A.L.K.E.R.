@@ -1,1 +1,1 @@
-# S.T.A.L.K.E.R
+# S.T.A.L.K.E.R.
