@@ -20,20 +20,7 @@ public class EndpointLayer {
 		return instance;
 	}
 
-	public String getFollowings(String userId) {
-		String endpointUri = setEndpointUri(userId);
-		String response = "";
-		try {
-			response = ClientSingleton.getInstance().newRequest(endpointUri)
-					.send().getContentAsString();
-		} catch (InterruptedException | ExecutionException | TimeoutException e) {
-			String msg = "cannot act get method on endpoint {\"uri\":\"%s\"}";
-			getLogger().error(String.format(msg, endpointUri), e);
-		}
-		return response;
-	}
-
-	private String setEndpointUri(String userId) {
+	public String setUriForFetchingFollowings(String userId) {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("https://api.instagram.com/v1/users/");
 		stringBuilder.append(userId);
@@ -48,7 +35,7 @@ public class EndpointLayer {
 	}
 
 	public String getFollowings(String userId, String nextCursor) {
-		String endpointUri = setEndpointUri(userId);
+		String endpointUri = setUriForFetchingFollowings(userId);
 		endpointUri = addParameterToUri(endpointUri, "cursor", nextCursor);
 		String response = "";
 		try {
@@ -64,11 +51,11 @@ public class EndpointLayer {
 	private String addParameterToUri(String endpointUri, String parameterType,
 			String nextCursor) {
 		StringBuilder stringBuilder = new StringBuilder();
-				stringBuilder.append(endpointUri);
-				stringBuilder.append("&");
-				stringBuilder.append(parameterType);
-				stringBuilder.append("=");
-				stringBuilder.append(nextCursor);
+		stringBuilder.append(endpointUri);
+		stringBuilder.append("&");
+		stringBuilder.append(parameterType);
+		stringBuilder.append("=");
+		stringBuilder.append(nextCursor);
 		return stringBuilder.toString();
 	}
 }
