@@ -5,6 +5,8 @@ import java.util.concurrent.TimeoutException;
 
 import org.apache.log4j.Logger;
 
+import com.aliyesilkanat.stalker.retriever.ClientSingleton;
+
 public class EndpointLayer {
 	private static EndpointLayer instance = null;
 	private final Logger logger = Logger.getLogger(EndpointLayer.class);

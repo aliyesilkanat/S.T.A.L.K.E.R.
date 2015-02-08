@@ -1,4 +1,4 @@
-package com.aliyesilkanat.stalker.endpoint;
+package com.aliyesilkanat.stalker.retriever;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jetty.client.HttpClient;
