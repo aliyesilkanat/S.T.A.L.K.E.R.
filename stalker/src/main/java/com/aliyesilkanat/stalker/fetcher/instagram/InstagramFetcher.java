@@ -1,6 +1,6 @@
 package com.aliyesilkanat.stalker.fetcher.instagram;
 
-import com.aliyesilkanat.stalker.endpoint.EndpointLayer;
+import com.aliyesilkanat.stalker.endpoint.EndpointUtils;
 import com.aliyesilkanat.stalker.fetcher.Fetcher;
 import com.aliyesilkanat.stalker.retriever.Retriever;
 import com.google.gson.Gson;
@@ -35,9 +35,9 @@ public class InstagramFetcher extends Fetcher {
 	 *            Id of User
 	 * @return Json Array as String.
 	 */
-	String requestFollowings(String userId) {
+	public String requestFollowings(String userId) {
 		// gets initial request uri for given user...
-		String initialRequestUri = EndpointLayer.getInstance()
+		String initialRequestUri = EndpointUtils.getInstance()
 				.setUriForFetchingFollowings(userId);
 
 		JsonObject apiResultJsonObject = getJsonFromApi(initialRequestUri);
@@ -65,7 +65,9 @@ public class InstagramFetcher extends Fetcher {
 	private boolean isThereAreMorePageToFetch(JsonObject apiResultJsonObject) {
 		if (apiResultJsonObject.has("pagination")) {
 			JsonElement jsonElement = apiResultJsonObject.get("pagination");
-			return jsonElement == null;
+			if (jsonElement != null) {
+				return jsonElement.getAsJsonObject().has("next_cursor");
+			}
 		}
 		return false;
 	}
@@ -95,13 +97,16 @@ public class InstagramFetcher extends Fetcher {
 				initialRequestUri);
 
 		// get next page from api...
-		String nextResultPage = new Retriever()
-				.requestDocument(addParameterToUri);
-		apiResultJsonObject = new Gson().fromJson(nextResultPage,
-				JsonObject.class);
+		apiResultJsonObject = getJsonFromApi(addParameterToUri);
 
 		addFollowingsIntoResultArray(apiResultJsonObject, resultArray);
 		return apiResultJsonObject;
+	}
+
+	private String getDocument(String addParameterToUri) {
+		String nextResultPage = new Retriever()
+				.requestDocument(addParameterToUri);
+		return nextResultPage;
 	}
 
 	/**
@@ -119,7 +124,7 @@ public class InstagramFetcher extends Fetcher {
 		JsonObject paginationObject = apiResultJsonObject.get("pagination")
 				.getAsJsonObject();
 		String nextCursor = paginationObject.get("next_cursor").getAsString();
-		String addParameterToUri = EndpointLayer.getInstance()
+		String addParameterToUri = EndpointUtils.getInstance()
 				.addParameterToUri(initialRequestUri, "cursor", nextCursor);
 		return addParameterToUri;
 	}
@@ -141,7 +146,7 @@ public class InstagramFetcher extends Fetcher {
 	 * @return Extracted json.
 	 */
 	public JsonObject getJsonFromApi(String initialRequestUri) {
-		String response = new Retriever().requestDocument(initialRequestUri);
+		String response = getDocument(initialRequestUri);
 		JsonObject apiResultJsonObject = new Gson().fromJson(response,
 				JsonObject.class);
 		return apiResultJsonObject;

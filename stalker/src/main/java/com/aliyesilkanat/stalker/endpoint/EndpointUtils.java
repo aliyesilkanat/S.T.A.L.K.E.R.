@@ -7,15 +7,15 @@ import org.apache.log4j.Logger;
 
 import com.aliyesilkanat.stalker.retriever.ClientSingleton;
 
-public class EndpointLayer {
-	private static EndpointLayer instance = null;
-	private final Logger logger = Logger.getLogger(EndpointLayer.class);
+public class EndpointUtils {
+	private static EndpointUtils instance = null;
+	private final Logger logger = Logger.getLogger(EndpointUtils.class);
 	private static final String ACCESS_TOKEN = "239984780.fe09684.e9be582082be4858a9bdb170c9007774";
 
-	public static EndpointLayer getInstance() {
+	public static EndpointUtils getInstance() {
 
 		if (instance == null) {
-			instance = new EndpointLayer();
+			instance = new EndpointUtils();
 		}
 		return instance;
 	}
