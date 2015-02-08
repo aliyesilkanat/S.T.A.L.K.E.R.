@@ -48,7 +48,7 @@ public class EndpointLayer {
 		return response;
 	}
 
-	private String addParameterToUri(String endpointUri, String parameterType,
+	public String addParameterToUri(String endpointUri, String parameterType,
 			String nextCursor) {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append(endpointUri);

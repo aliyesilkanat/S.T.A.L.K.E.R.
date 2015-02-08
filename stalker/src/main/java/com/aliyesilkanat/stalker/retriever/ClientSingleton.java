@@ -15,9 +15,7 @@ public class ClientSingleton {
 			SslContextFactory context = new SslContextFactory(true);
 			client = new HttpClient(context);
 			try {
-				getLogger().info("starting client");
 				client.start();
-				getLogger().debug("started client");
 			} catch (Exception e) {
 				getLogger().error("cannot start client", e);
 			}
