@@ -2,6 +2,7 @@ package com.aliyesilkanat.stalker.extractor;
 
 import org.apache.log4j.Logger;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 
 /**
@@ -19,8 +20,8 @@ public abstract class Extractor {
 	 */
 	private final Logger logger = Logger.getLogger(getClass());
 
-	public Extractor(JsonArray friendsArray) {
-		this.setFriendsArray(friendsArray);
+	public Extractor(String friendsArray) {
+		this.setFriendsArray(new Gson().fromJson(friendsArray, JsonArray.class));
 	}
 
 	abstract public void execute();

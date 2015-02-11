@@ -1,12 +1,13 @@
 package com.aliyesilkanat.stalker.extractor;
 
+import com.aliyesilkanat.stalker.util.Tag;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 public class InstagramExtractor extends Extractor {
 
-	public InstagramExtractor(JsonArray friendsArray) {
+	public InstagramExtractor(String friendsArray) {
 		super(friendsArray);
 	}
 
@@ -21,18 +22,19 @@ public class InstagramExtractor extends Extractor {
 
 	private JsonObject fillJsonLdObject(JsonObject userObjectRaw) {
 		JsonObject userObjectLD = new JsonObject();
-		userObjectLD.addProperty("@context", "http://schema.org");
-		userObjectLD.addProperty("@id", setUserUri(userObjectRaw));
-		userObjectLD.addProperty("@type", "Person");
-		userObjectLD.addProperty("image", userObjectRaw.get("profile_picture")
-				.getAsString());
+		userObjectLD.addProperty(Tag.CONTEXT.text(), Tag.SCHEMA.text());
+		userObjectLD.addProperty(Tag.ID.text(), setUserUri(userObjectRaw));
+		userObjectLD.addProperty(Tag.TYPE.text(), Tag.PERSON.text());
+		userObjectLD.addProperty(Tag.IMAGE.text(),
+				userObjectRaw.get("profile_picture").getAsString());
 		return userObjectLD;
 	}
 
 	private String setUserUri(JsonObject userObjectRaw) {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("http://instagram.com/");
-		stringBuilder.append(userObjectRaw.get("username").getAsString());
+		stringBuilder.append(userObjectRaw.get(Tag.USER_NAME.text())
+				.getAsString());
 		return stringBuilder.toString();
 	}
 
