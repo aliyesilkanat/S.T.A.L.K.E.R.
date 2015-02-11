@@ -18,6 +18,7 @@ public class InstagramExtractor extends Extractor {
 			JsonObject userObjectRaw = jsonElement.getAsJsonObject();
 			userArrayLD.add(fillJsonLdObject(userObjectRaw));
 		}
+		this.setFriendsArray(userArrayLD);
 	}
 
 	private JsonObject fillJsonLdObject(JsonObject userObjectRaw) {
