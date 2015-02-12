@@ -50,6 +50,12 @@ public enum Tag {
 		public String text() {
 			return "username";
 		}
+	},
+	NAME {
+		@Override
+		public String text() {
+			return "name";
+		}
 	};
 
 	public abstract String text();

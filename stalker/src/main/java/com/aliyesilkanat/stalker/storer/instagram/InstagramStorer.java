@@ -5,8 +5,8 @@ import com.aliyesilkanat.stalker.util.JsonLDUtils;
 import com.hp.hpl.jena.rdf.model.Model;
 
 public class InstagramStorer extends Storer {
-	public InstagramStorer(String content, String userId) {
-		super(content, userId);
+	public InstagramStorer(String content, String userUri) {
+		super(content, userUri);
 	}
 
 	public void fetchFriendsFromDb() {

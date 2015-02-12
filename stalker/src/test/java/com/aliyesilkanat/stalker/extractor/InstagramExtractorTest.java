@@ -31,6 +31,6 @@ public class InstagramExtractorTest {
 				"239984780");
 		extractor.execute();
 		JsonArray result = extractor.getFriendsArrayLD();
-		Assert.assertEquals(sampleFollowingsLd, result);
+		Assert.assertEquals(sampleFollowingsLd.toString(), result.toString());
 	}
 }

@@ -10,6 +10,7 @@ import com.google.gson.JsonObject;
 
 public class InstagramExtractor extends Extractor {
 
+	private static final String FULL_NAME = "full_name";
 	private static final String INSTAGRAM_BASED_URL = "http://instagram.com/";
 	private static final String PROFILE_PICTURE = "profile_picture";
 
@@ -49,6 +50,8 @@ public class InstagramExtractor extends Extractor {
 		userObjectLD.addProperty(Tag.CONTEXT.text(), Tag.SCHEMA.text());
 		userObjectLD.addProperty(Tag.ID.text(), setUserUri(userObjectRaw));
 		userObjectLD.addProperty(Tag.TYPE.text(), Tag.PERSON.text());
+		userObjectLD.addProperty(Tag.NAME.text(), userObjectRaw
+				.get(FULL_NAME).getAsString());
 		userObjectLD.addProperty(Tag.IMAGE.text(),
 				userObjectRaw.get(PROFILE_PICTURE).getAsString());
 		return userObjectLD;

@@ -8,6 +8,7 @@ import com.aliyesilkanat.stalker.storer.DBUtils;
 import com.aliyesilkanat.stalker.tracker.Tracker;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.query.ResultSetFormatter;
 
@@ -23,6 +24,16 @@ public class InstagramTracker extends Tracker {
 		getLogger().info(String.format(msg, getResponse(), getUserId()));
 		String userURI = retrieveUserURI();
 		String query = setFollowingsQuery(userURI);
+		ResultSet execSelect = execSelect(query);
+		if (execSelect != null) {
+			while (execSelect.hasNext()) {
+				QuerySolution solution = execSelect.next();
+			}
+		}
+	}
+
+	private ResultSet execSelect(String query) {
+		String msg;
 		ResultSet selectFromEndpoint = null;
 		try {
 			selectFromEndpoint = DBUtils.selectFromEndpoint(query);
@@ -38,7 +49,7 @@ public class InstagramTracker extends Tracker {
 			msg = "error while executing query on endpoint {\"query\":\"%s\"}";
 			getLogger().error(String.format(msg, query), e);
 		}
-
+		return selectFromEndpoint;
 	}
 
 	private String setFollowingsQuery(String userURI) {
