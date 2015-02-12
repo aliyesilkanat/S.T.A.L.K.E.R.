@@ -1,19 +1,6 @@
 package com.aliyesilkanat.stalker.storer;
 
-import java.util.ArrayList;
-
 import org.apache.log4j.Logger;
-
-import virtuoso.jena.driver.VirtGraph;
-
-import com.aliyesilkanat.stalker.util.XSDDateTimeUtil;
-import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
-import com.hp.hpl.jena.graph.GraphUtil;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
-import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.rdf.model.StmtIterator;
 
 public abstract class Storer {
 
@@ -52,6 +39,5 @@ public abstract class Storer {
 	public void setUserURI(String userURI) {
 		this.userURI = userURI;
 	}
-
 
 }

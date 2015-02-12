@@ -1,16 +1,20 @@
 package com.aliyesilkanat.stalker.data.connector;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
 
 import virtuoso.jena.driver.VirtGraph;
 
+import com.aliyesilkanat.stalker.storer.DBUtils;
 import com.aliyesilkanat.stalker.storer.GraphConstants;
 import com.aliyesilkanat.stalker.util.XSDDateTimeUtil;
 import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
 import com.hp.hpl.jena.graph.GraphUtil;
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.rdf.model.Statement;
@@ -74,6 +78,26 @@ public class VirtuosoConnector {
 			getLogger().error(
 					"Occured exception while writing model to virtuoso: ", e);
 		}
+	}
+
+	public ResultSet execSelect(String query) {
+		String msg;
+		ResultSet selectFromEndpoint = null;
+		try {
+			selectFromEndpoint = DBUtils.selectFromEndpoint(query);
+			if (selectFromEndpoint != null) {
+				// convert resultset to json..
+				ByteArrayOutputStream b = new ByteArrayOutputStream();
+				ResultSetFormatter.outputAsJSON(b, selectFromEndpoint);
+				String json = b.toString("UTF-8");
+				msg = "query results {\"results\":\"%s\"}";
+				getLogger().debug(String.format(msg, json));
+			}
+		} catch (Exception e) {
+			msg = "error while executing query on endpoint {\"query\":\"%s\"}";
+			getLogger().error(String.format(msg, query), e);
+		}
+		return selectFromEndpoint;
 	}
 
 	private VirtGraph createVirtGraph(String graphURI) {

@@ -1,16 +1,17 @@
 package com.aliyesilkanat.stalker.tracker.instagram;
 
-import java.io.ByteArrayOutputStream;
+import java.util.Arrays;
+import java.util.List;
 
+import com.aliyesilkanat.stalker.data.RDFDataLayer;
 import com.aliyesilkanat.stalker.endpoint.EndpointUtils;
 import com.aliyesilkanat.stalker.retriever.Retriever;
-import com.aliyesilkanat.stalker.storer.DBUtils;
 import com.aliyesilkanat.stalker.tracker.Tracker;
+import com.aliyesilkanat.stalker.util.wrapper.InstagramApiJsonWrapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.query.ResultSetFormatter;
 
 public class InstagramTracker extends Tracker {
 
@@ -24,32 +25,28 @@ public class InstagramTracker extends Tracker {
 		getLogger().info(String.format(msg, getResponse(), getUserId()));
 		String userURI = retrieveUserURI();
 		String query = setFollowingsQuery(userURI);
-		ResultSet execSelect = execSelect(query);
+		ResultSet execSelect = RDFDataLayer.getInstance().execSelect(query);
+		List<InstagramApiJsonWrapper> followingsList = getFollowingsAsList();
 		if (execSelect != null) {
 			while (execSelect.hasNext()) {
 				QuerySolution solution = execSelect.next();
+				String userUri = solution.get("p").asLiteral().getString();
+				for (InstagramApiJsonWrapper instagramApiJsonWrapper : followingsList) {
+					if (userUri.contains(instagramApiJsonWrapper.getUsername())) {
+						followingsList.remove(instagramApiJsonWrapper);
+						break;
+					}
+				}
+
 			}
 		}
 	}
 
-	private ResultSet execSelect(String query) {
-		String msg;
-		ResultSet selectFromEndpoint = null;
-		try {
-			selectFromEndpoint = DBUtils.selectFromEndpoint(query);
-			if (selectFromEndpoint != null) {
-				// convert resultset to json..
-				ByteArrayOutputStream b = new ByteArrayOutputStream();
-				ResultSetFormatter.outputAsJSON(b, selectFromEndpoint);
-				String json = b.toString("UTF-8");
-				msg = "query results {\"results\":\"%s\"}";
-				getLogger().debug(String.format(msg, json));
-			}
-		} catch (Exception e) {
-			msg = "error while executing query on endpoint {\"query\":\"%s\"}";
-			getLogger().error(String.format(msg, query), e);
-		}
-		return selectFromEndpoint;
+	private List<InstagramApiJsonWrapper> getFollowingsAsList() {
+		InstagramApiJsonWrapper[] instagramArray = new Gson().fromJson(
+				getResponse(), InstagramApiJsonWrapper[].class);
+		List<InstagramApiJsonWrapper> asList = Arrays.asList(instagramArray);
+		return asList;
 	}
 
 	private String setFollowingsQuery(String userURI) {
