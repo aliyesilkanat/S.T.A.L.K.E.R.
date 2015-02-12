@@ -1,7 +1,7 @@
 package com.aliyesilkanat.stalker.fetcher.instagram;
 
 import com.aliyesilkanat.stalker.endpoint.EndpointUtils;
-import com.aliyesilkanat.stalker.extractor.InstagramExtractor;
+import com.aliyesilkanat.stalker.extractor.instagram.InstagramExtractor;
 import com.aliyesilkanat.stalker.fetcher.Fetcher;
 import com.aliyesilkanat.stalker.retriever.Retriever;
 import com.aliyesilkanat.stalker.storer.InstagramStorer;

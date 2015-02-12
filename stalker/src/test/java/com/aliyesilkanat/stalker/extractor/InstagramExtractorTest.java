@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.aliyesilkanat.stalker.extractor.instagram.InstagramExtractor;
 import com.aliyesilkanat.stalker.util.FileUtil;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -21,9 +22,9 @@ public class InstagramExtractorTest {
 		JsonParser parser = new JsonParser();
 		JsonObject element = parser.parse(FileUtil.readFile("testHtml/followings.json")).getAsJsonObject();
 		JsonArray friends = element.get("data").getAsJsonArray();
-		Extractor extractor = new InstagramExtractor(friends);
+		Extractor extractor = new InstagramExtractor(friends.toString());
 		extractor.execute();
-		JsonArray result = extractor.getFriendsArray();
+		JsonArray result = extractor.getFriendsArrayLD();
 		Assert.assertEquals(sampleFollowingsLd, result);
 	}
 }

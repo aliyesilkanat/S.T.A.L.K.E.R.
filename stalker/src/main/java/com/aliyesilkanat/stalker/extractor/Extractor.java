@@ -16,6 +16,10 @@ public abstract class Extractor {
 	private JsonArray friendsArray;
 
 	/**
+	 * Field for holding friends array in json ld.
+	 */
+	private JsonArray friendsArrayLD;
+	/**
 	 * Logger instance
 	 */
 	private final Logger logger = Logger.getLogger(getClass());
@@ -30,11 +34,19 @@ public abstract class Extractor {
 		return friendsArray;
 	}
 
+	public JsonArray getFriendsArrayLD() {
+		return friendsArrayLD;
+	}
+
 	public Logger getLogger() {
 		return logger;
 	}
 
 	public void setFriendsArray(JsonArray friendsArray) {
 		this.friendsArray = friendsArray;
+	}
+
+	public void setFriendsArrayLD(JsonArray friendsArrayLD) {
+		this.friendsArrayLD = friendsArrayLD;
 	}
 }
