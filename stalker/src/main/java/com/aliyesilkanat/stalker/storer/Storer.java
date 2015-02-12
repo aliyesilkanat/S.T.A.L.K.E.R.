@@ -1,22 +1,21 @@
 package com.aliyesilkanat.stalker.storer;
 
-import java.util.ArrayList;
-
 import org.apache.log4j.Logger;
 
-import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
-import com.hp.hpl.jena.graph.GraphUtil;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
-import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.rdf.model.StmtIterator;
-
 public abstract class Storer {
+	
+	/**
+	 * JsonLd of followings.
+	 */
 	private String content;
+	/**
+	 * User id of person.
+	 */
+	private String userId;
 
-	public Storer(String content) {
+	public Storer(String content, String userId) {
 		this.setContent(content);
+		this.setUserId(userId);
 	}
 
 	private final Logger logger = Logger.getLogger(getClass());
@@ -31,6 +30,14 @@ public abstract class Storer {
 
 	public void setContent(String content) {
 		this.content = content;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
 	/**

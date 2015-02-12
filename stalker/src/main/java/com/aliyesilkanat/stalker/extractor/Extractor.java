@@ -24,8 +24,14 @@ public abstract class Extractor {
 	 */
 	private final Logger logger = Logger.getLogger(getClass());
 
-	public Extractor(String friendsArray) {
+	/**
+	 * User id of person.
+	 */
+	private String userId;
+
+	public Extractor(String friendsArray, String userId) {
 		this.setFriendsArray(new Gson().fromJson(friendsArray, JsonArray.class));
+		this.setUserId(userId);
 	}
 
 	abstract public void execute();
@@ -48,5 +54,13 @@ public abstract class Extractor {
 
 	public void setFriendsArrayLD(JsonArray friendsArrayLD) {
 		this.friendsArrayLD = friendsArrayLD;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 }

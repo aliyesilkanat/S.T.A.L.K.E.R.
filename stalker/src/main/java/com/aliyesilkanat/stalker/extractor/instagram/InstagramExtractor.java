@@ -1,7 +1,8 @@
 package com.aliyesilkanat.stalker.extractor.instagram;
 
 import com.aliyesilkanat.stalker.extractor.Extractor;
-import com.aliyesilkanat.stalker.storer.InstagramStorer;
+import com.aliyesilkanat.stalker.storer.instagram.InstagramStorer;
+import com.aliyesilkanat.stalker.tracker.instagram.InstagramTracker;
 import com.aliyesilkanat.stalker.util.Tag;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -12,8 +13,8 @@ public class InstagramExtractor extends Extractor {
 	private static final String INSTAGRAM_BASED_URL = "http://instagram.com/";
 	private static final String PROFILE_PICTURE = "profile_picture";
 
-	public InstagramExtractor(String friendsArray) {
-		super(friendsArray);
+	public InstagramExtractor(String friendsArray, String userId) {
+		super(friendsArray, userId);
 	}
 
 	@Override
@@ -23,7 +24,8 @@ public class InstagramExtractor extends Extractor {
 		convertJsonIntoJsonLd();
 		msg = "converted jsons into jsonld {\"jsonld\":\"%s\"}";
 		getLogger().debug(String.format(msg, getFriendsArrayLD()));
-		new InstagramStorer(this.getFriendsArrayLD().toString()).catchContent();
+		new InstagramStorer(this.getFriendsArrayLD().toString(), getUserId())
+				.catchContent();
 	}
 
 	private void convertJsonIntoJsonLd() {

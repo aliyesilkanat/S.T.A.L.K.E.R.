@@ -4,7 +4,8 @@ import com.aliyesilkanat.stalker.endpoint.EndpointUtils;
 import com.aliyesilkanat.stalker.extractor.instagram.InstagramExtractor;
 import com.aliyesilkanat.stalker.fetcher.Fetcher;
 import com.aliyesilkanat.stalker.retriever.Retriever;
-import com.aliyesilkanat.stalker.storer.InstagramStorer;
+import com.aliyesilkanat.stalker.storer.instagram.InstagramStorer;
+import com.aliyesilkanat.stalker.tracker.instagram.InstagramTracker;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -28,7 +29,7 @@ public class InstagramFetcher extends Fetcher {
 			msg = "fetched friends {\"userId\":\"%s\", \"responseJson\":\"%s\"}";
 			getLogger().trace(String.format(msg, userId, response));
 		}
-		new InstagramExtractor(response).execute();
+		new InstagramTracker(response, userId).catchChange();
 	}
 
 	/**

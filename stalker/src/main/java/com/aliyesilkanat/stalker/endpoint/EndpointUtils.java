@@ -48,6 +48,11 @@ public class EndpointUtils {
 		return response;
 	}
 
+	public String getPersonDetails(String userID) {
+		return "https://api.instagram.com/v1/users/" + userID
+				+ "/?access_token=" + ACCESS_TOKEN;
+	}
+
 	public String addParameterToUri(String endpointUri, String parameterType,
 			String nextCursor) {
 		StringBuilder stringBuilder = new StringBuilder();
