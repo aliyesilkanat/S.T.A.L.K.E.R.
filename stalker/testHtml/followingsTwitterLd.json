@@ -1,0 +1,16 @@
+[
+  {
+    "@context": "http://schema.org/",
+    "@id": "http://twitter.com/okanbayulgen",
+    "@type": "Person",
+    "name":"okan bayulgen",
+    "image": "https://pbs.twimg.com/profile_images/471807290710839296/l5Dk84et.jpeg"
+  },
+  {
+    "@context": "http://schema.org/",
+    "@id": "http://twitter.com/atademirer",
+    "@type": "Person",
+    "name":"atademirer",
+    "image": "https://pbs.twimg.com/profile_images/532530740387270658/8eyk6ndQ.png"
+  }
+]

@@ -14,6 +14,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 public class TwitterFetcher extends Fetcher{
+	
+	/**
+	 * @author Iþýk Erhan
+	 */
 
 	private static final String consumerKey = "OD0R13BiOyq38jgxxFDxSoXoZ";
 	private static final String consumerSecret = "WXq4FY7C7P1Rk1coTdTsdT8wgGCyaAXHapZ0prAK5fuq3M2T6i";
