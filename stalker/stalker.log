@@ -1,12 +1,1 @@
-21:07:41,327 INFO  [com.aliyesilkanat.stalker.fetcher.twitter.TwitterFetcher] (main) Fetching friends of 3032812463: FikriSoft;))
-21:49:04,165 INFO  [com.aliyesilkanat.stalker.extractor.twitter.TwitterExtractor] (main) Starting execution
-21:49:04,165 INFO  [com.aliyesilkanat.stalker.extractor.twitter.TwitterExtractor] (main) Converting json into jsonLd
-21:49:04,165 INFO  [com.aliyesilkanat.stalker.extractor.twitter.TwitterExtractor] (main) Json elements in JsonArray converted into jsonLDs
-21:51:03,198 INFO  [com.aliyesilkanat.stalker.extractor.twitter.TwitterExtractor] (main) Starting execution
-21:51:03,199 INFO  [com.aliyesilkanat.stalker.extractor.twitter.TwitterExtractor] (main) Converting json into jsonLd
-21:51:03,199 INFO  [com.aliyesilkanat.stalker.extractor.twitter.TwitterExtractor] (main) Json elements in JsonArray converted into jsonLDs
-21:51:03,203 INFO  [com.aliyesilkanat.stalker.extractor.twitter.TwitterExtractor] (main) [  {    "@context": "http://schema.org/",    "@id": "http://twitter.com/okanbayulgen",    "@type": "Person",    "name":"okan bayulgen",    "image": "https://pbs.twimg.com/profile_images/471807290710839296/l5Dk84et.jpeg"  },  {    "@context": "http://schema.org/",    "@id": "http://twitter.com/atademirer",    "@type": "Person",    "name":"atademirer",    "image": "https://pbs.twimg.com/profile_images/532530740387270658/8eyk6ndQ.png"  }]
-21:51:03,203 INFO  [com.aliyesilkanat.stalker.extractor.twitter.TwitterExtractor] (main) [{"@context":"http://schema.org/","@id":"http://twitter.com/okanbayulgen","@type":"Person","name":"okan bayulgen","image":"https://pbs.twimg.com/profile_images/471807290710839296/l5Dk84et.jpeg"},{"@context":"http://schema.org/","@id":"http://twitter.com/atademirer","@type":"Person","name":"atademirer","image":"https://pbs.twimg.com/profile_images/532530740387270658/8eyk6ndQ.png"}]
-21:52:26,563 INFO  [com.aliyesilkanat.stalker.extractor.twitter.TwitterExtractor] (main) Starting execution
-21:52:26,563 INFO  [com.aliyesilkanat.stalker.extractor.twitter.TwitterExtractor] (main) Converting json into jsonLd
-21:52:26,563 INFO  [com.aliyesilkanat.stalker.extractor.twitter.TwitterExtractor] (main) Json elements in JsonArray converted into jsonLDs
+18:05:18,195 INFO  [com.aliyesilkanat.stalker.fetcher.twitter.TwitterFetcher] (main) Fetching friends of 3032812463: FikriSoft;))

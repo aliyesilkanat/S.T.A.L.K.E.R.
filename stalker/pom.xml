@@ -75,7 +75,13 @@
 			<artifactId>virtjdbc</artifactId>
 			<version>3</version>
 		</dependency>
-	</dependencies><repositories>
+		<dependency>
+			<groupId>org.twitter4j</groupId>
+			<artifactId>twitter4j-core</artifactId>
+			<version>4.0.2</version>
+		</dependency>
+	</dependencies>
+	<repositories>
 		<repository>
 			<id>galaksiya</id>
 			<name>Galaksiya Repository</name>
