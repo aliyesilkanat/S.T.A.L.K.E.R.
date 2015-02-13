@@ -3,10 +3,15 @@ package com.aliyesilkanat.stalker.storer;
 import static org.junit.Assert.*;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import org.junit.Test;
+
+import com.aliyesilkanat.stalker.data.RelationalDataLayer;
 
 public class MysqlTest {
 
@@ -18,14 +23,11 @@ public class MysqlTest {
 		Connection connection = null;
 		boolean connected = false;
 		try {
-			System.out.println("Connecting database...");
 			connection = DriverManager.getConnection(url, username, password);
-			System.out.println("Database connected!");
 			connected = true;
 		} catch (SQLException e) {
 			throw new RuntimeException("Cannot connect the database!", e);
 		} finally {
-			System.out.println("Closing the connection.");
 			if (connection != null)
 				try {
 					connection.close();
@@ -34,4 +36,22 @@ public class MysqlTest {
 		}
 		assertTrue(connected);
 	}
+
+	@Test
+	public void checkInsertionAndSelection() throws Exception {
+		Connection connection = RelationalDataLayer.getInstance()
+				.createConnection();
+		Statement statement = connection.createStatement();
+		statement.execute("Truncate table Test");
+		statement
+				.execute("insert into Test (Value,Time) values (2,timestamp'2015-02-13 16:39:36')");
+		ResultSet resultSet = statement.executeQuery("select * from Test");
+		while (resultSet.next()) {
+			assertEquals("2", resultSet.getString(1));
+			assertEquals("2015-02-13 16:39:36.0", resultSet.getString(2));
+		}
+		statement.close();
+		connection.close();
+	}
+
 }

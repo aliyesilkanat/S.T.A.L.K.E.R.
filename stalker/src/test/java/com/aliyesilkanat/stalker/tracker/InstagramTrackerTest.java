@@ -31,11 +31,6 @@ public class InstagramTrackerTest {
 	private InstagramTracker tracker;
 	private Model model;
 
-	@Before
-	public void before() {
-
-	}
-
 	private ResultSet setExampleResultSet(String exampleJson) {
 		String followingsAsJsonLdString = new InstagramExtractor(exampleJson,
 				USER_URI_EXAMPLE).execute();
