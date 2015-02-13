@@ -38,9 +38,9 @@ public class InstagramTracker extends Tracker {
 		String msg = "catching change {\"userURI\":\"%s\", \"follows\":\"%s\"}";
 		getLogger().info(String.format(msg, getUserURI(), getResponse()));
 
-		ResultSet execSelect = getFollowingsFromRDFStore();
 		List<InstagramApiJsonWrapper> followingsList = getFollowingsAsList();
 		List<String> traverseRDFStore = null;
+		ResultSet execSelect = getFollowingsFromRDFStore();
 		if (execSelect != null) {
 			traverseRDFStore = traverseRDFStore(execSelect, followingsList);
 		}
@@ -53,6 +53,11 @@ public class InstagramTracker extends Tracker {
 		deletedFollowingsLog(traverseRDFStore, deletedFollowingsJsonArrayString);
 		String jsonLDArray = new InstagramExtractor(addedFollowings.toString(),
 				getUserURI()).execute();
+		send2Storer(deletedFollowingsJsonArrayString, jsonLDArray);
+	}
+
+	public void send2Storer(String deletedFollowingsJsonArrayString,
+			String jsonLDArray) {
 		new InstagramStorer(jsonLDArray, getUserURI(),
 				deletedFollowingsJsonArrayString).executeFollowingsChange();
 	}
