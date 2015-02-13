@@ -6,7 +6,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import com.aliyesilkanat.stalker.endpoint.EndpointUtils;
 import com.aliyesilkanat.stalker.fetcher.instagram.InstagramFetcher;
 import com.aliyesilkanat.stalker.util.FileUtil;
 import com.google.gson.Gson;
@@ -39,7 +38,8 @@ public class InstagramFetcherTest {
 		String cursor = FileUtil.readFile("testHtml/followingsWithCursor.json");
 		Mockito.doReturn(
 				new Gson().fromJson(fileWithoutCursor, JsonObject.class))
-				.when(fetcher).getJsonFromApi(Mockito.endsWith("cursor=1398087631922"));
+				.when(fetcher)
+				.getJsonFromApi(Mockito.endsWith("cursor=1398087631922"));
 		Mockito.doReturn(new Gson().fromJson(cursor, JsonObject.class))
 				.when(fetcher)
 				.getJsonFromApi(

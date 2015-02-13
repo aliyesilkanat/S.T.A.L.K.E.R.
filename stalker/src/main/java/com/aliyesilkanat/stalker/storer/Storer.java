@@ -12,10 +12,15 @@ public abstract class Storer {
 	 * User uri of person.
 	 */
 	private String userURI;
+	/**
+	 * Added new followings of person.
+	 */
+	private String addedNewFollowings;
 
-	public Storer(String content, String userURI) {
+	public Storer(String content, String userURI, String addedNewFollowings) {
 		this.setContent(content);
 		this.setUserURI(userURI);
+		this.setAddedNewFollowings(addedNewFollowings);
 	}
 
 	private final Logger logger = Logger.getLogger(getClass());
@@ -38,6 +43,14 @@ public abstract class Storer {
 
 	public void setUserURI(String userURI) {
 		this.userURI = userURI;
+	}
+
+	public String getAddedNewFollowings() {
+		return addedNewFollowings;
+	}
+
+	public void setAddedNewFollowings(String addedNewFollowings) {
+		this.addedNewFollowings = addedNewFollowings;
 	}
 
 }

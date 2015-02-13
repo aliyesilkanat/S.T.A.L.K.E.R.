@@ -1,8 +1,6 @@
 package com.aliyesilkanat.stalker.extractor.instagram;
 
 import com.aliyesilkanat.stalker.extractor.Extractor;
-import com.aliyesilkanat.stalker.storer.instagram.InstagramStorer;
-import com.aliyesilkanat.stalker.tracker.instagram.InstagramTracker;
 import com.aliyesilkanat.stalker.util.Tag;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -14,28 +12,30 @@ public class InstagramExtractor extends Extractor {
 	private static final String INSTAGRAM_BASED_URL = "http://instagram.com/";
 	private static final String PROFILE_PICTURE = "profile_picture";
 
-	public InstagramExtractor(String friendsArray, String userId) {
-		super(friendsArray, userId);
+	public InstagramExtractor(String friendsArray, String userURI) {
+		super(friendsArray, userURI);
 	}
 
 	@Override
-	public void execute() {
+	public String execute() {
 		String msg = "converting json into jsonld {\"json\":\"%s\"}";
 		getLogger().info(String.format(msg, getFriendsArray()));
-		convertJsonIntoJsonLd();
+
+		JsonArray followingsJsonLd = convertJsonArrayIntoJsonLdArray();
+
 		msg = "converted jsons into jsonld {\"jsonld\":\"%s\"}";
-		getLogger().debug(String.format(msg, getFriendsArrayLD()));
-		new InstagramStorer(this.getFriendsArrayLD().toString(), getUserId())
-				.catchContent();
+		getLogger().debug(String.format(msg, followingsJsonLd));
+
+		return followingsJsonLd.toString();
 	}
 
-	private void convertJsonIntoJsonLd() {
+	private JsonArray convertJsonArrayIntoJsonLdArray() {
 		JsonArray userArrayLD = new JsonArray();
 		for (JsonElement jsonElement : getFriendsArray()) {
 			JsonObject userObjectRaw = jsonElement.getAsJsonObject();
 			userArrayLD.add(fillJsonLdObject(userObjectRaw));
 		}
-		this.setFriendsArrayLD(userArrayLD);
+		return userArrayLD;
 	}
 
 	/**
@@ -43,15 +43,15 @@ public class InstagramExtractor extends Extractor {
 	 * 
 	 * @param userObjectRaw
 	 *            raw json object comes from instagram api.
-	 * @return
+	 * @return JsonLD object contains data about person.
 	 */
 	private JsonObject fillJsonLdObject(JsonObject userObjectRaw) {
 		JsonObject userObjectLD = new JsonObject();
 		userObjectLD.addProperty(Tag.CONTEXT.text(), Tag.SCHEMA.text());
 		userObjectLD.addProperty(Tag.ID.text(), setUserUri(userObjectRaw));
 		userObjectLD.addProperty(Tag.TYPE.text(), Tag.PERSON.text());
-		userObjectLD.addProperty(Tag.NAME.text(), userObjectRaw
-				.get(FULL_NAME).getAsString());
+		userObjectLD.addProperty(Tag.NAME.text(), userObjectRaw.get(FULL_NAME)
+				.getAsString());
 		userObjectLD.addProperty(Tag.IMAGE.text(),
 				userObjectRaw.get(PROFILE_PICTURE).getAsString());
 		return userObjectLD;

@@ -5,8 +5,9 @@ import com.aliyesilkanat.stalker.util.JsonLDUtils;
 import com.hp.hpl.jena.rdf.model.Model;
 
 public class InstagramStorer extends Storer {
-	public InstagramStorer(String content, String userUri) {
-		super(content, userUri);
+	public InstagramStorer(String content, String userUri,
+			String addedNewFollowings) {
+		super(content, userUri, addedNewFollowings);
 	}
 
 	public void fetchFriendsFromDb() {
@@ -22,5 +23,10 @@ public class InstagramStorer extends Storer {
 		Model model = JsonLDUtils.convert2Model(getContent());
 		// write content to virtuoso..
 		// writeModel2Virtuoso(model, chooseGraph(model));
+	}
+
+	public void executeFollowingsChange() {
+		// TODO Auto-generated method stub
+
 	}
 }
