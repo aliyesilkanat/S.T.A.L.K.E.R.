@@ -1,11 +1,11 @@
-package com.aliyesilkanat.stalker.trigger.instagram;
+package com.aliyesilkanat.stalker.trigger.twitter;
 
-import com.aliyesilkanat.stalker.fetcher.twitter.TwitterFetcher;
+import com.aliyesilkanat.stalker.fetcher.instagram.InstagramFetcher;
 import com.aliyesilkanat.stalker.trigger.Trigger;
 
-public class FollowingsTrigger extends Trigger {
+public class TwitterFollowingsTrigger extends Trigger{
 
-	public FollowingsTrigger(String userID) {
+	public TwitterFollowingsTrigger(String userID) {
 		super(userID);
 	}
 
@@ -13,10 +13,11 @@ public class FollowingsTrigger extends Trigger {
 	public void execute() {
 		String msg = "executing followings trigger {\"userID\":\"%s\"}";
 		getLogger().info(String.format(msg, getUserID()));
-		new TwitterFetcher().fetch(getUserID());
+		new InstagramFetcher().fetch(getUserID());
 		if (getLogger().isTraceEnabled()) {
 			msg = "executed followings trigger {\"userID\":\"%s\"}";
 			getLogger().trace(String.format(msg, getUserID()));
 		}
 	}
+
 }
