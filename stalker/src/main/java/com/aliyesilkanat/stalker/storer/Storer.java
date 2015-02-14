@@ -2,25 +2,32 @@ package com.aliyesilkanat.stalker.storer;
 
 import org.apache.log4j.Logger;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+
 public abstract class Storer {
 
 	/**
-	 * JsonLd of followings.
+	 * JsonLd of added new followings.
 	 */
-	private String content;
+	private JsonArray addedNewFollowings;
+	/**
+	 * Deleted new followings of person as json array (Array contains only
+	 * userUris).
+	 */
+	private JsonArray deletedFollowings;
 	/**
 	 * User uri of person.
 	 */
 	private String userURI;
-	/**
-	 * Added new followings of person.
-	 */
-	private String addedNewFollowings;
 
-	public Storer(String content, String userURI, String addedNewFollowings) {
-		this.setContent(content);
+	public Storer(String addedNewFollownigs, String deletedNewFollowings,
+			String userURI) {
+		this.setAddedNewFollowings(new Gson().fromJson(addedNewFollownigs,
+				JsonArray.class));
+		this.setDeletedFollowings(new Gson().fromJson(deletedNewFollowings,
+				JsonArray.class));
 		this.setUserURI(userURI);
-		this.setAddedNewFollowings(addedNewFollowings);
 	}
 
 	private final Logger logger = Logger.getLogger(getClass());
@@ -29,12 +36,12 @@ public abstract class Storer {
 		return logger;
 	}
 
-	public String getContent() {
-		return content;
+	public JsonArray getAddedNewFollowings() {
+		return addedNewFollowings;
 	}
 
-	public void setContent(String content) {
-		this.content = content;
+	public void setAddedNewFollowings(JsonArray addedNewFollowings) {
+		this.addedNewFollowings = addedNewFollowings;
 	}
 
 	public String getUserURI() {
@@ -45,12 +52,12 @@ public abstract class Storer {
 		this.userURI = userURI;
 	}
 
-	public String getAddedNewFollowings() {
-		return addedNewFollowings;
+	public JsonArray getDeletedFollowings() {
+		return deletedFollowings;
 	}
 
-	public void setAddedNewFollowings(String addedNewFollowings) {
-		this.addedNewFollowings = addedNewFollowings;
+	public void setDeletedFollowings(JsonArray deletedFollowings) {
+		this.deletedFollowings = deletedFollowings;
 	}
 
 }

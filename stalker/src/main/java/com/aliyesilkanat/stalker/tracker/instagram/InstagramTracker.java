@@ -20,6 +20,7 @@ import com.hp.hpl.jena.query.ResultSet;
 
 public class InstagramTracker extends Tracker {
 
+	private static final String INSTAGRAM_BASE_URL = "http://instagram.com/";
 	/**
 	 * UserUri which extracted by using user id via instagram api.
 	 */
@@ -38,7 +39,7 @@ public class InstagramTracker extends Tracker {
 		String msg = "catching change {\"userURI\":\"%s\", \"follows\":\"%s\"}";
 		getLogger().info(String.format(msg, getUserURI(), getResponse()));
 
-		List<InstagramApiJsonWrapper> followingsList = getFollowingsAsList();
+		List<InstagramApiJsonWrapper> followingsList = createFollowingsAsList();
 		List<String> traverseRDFStore = null;
 		ResultSet execSelect = getFollowingsFromRDFStore();
 		if (execSelect != null) {
@@ -49,10 +50,15 @@ public class InstagramTracker extends Tracker {
 
 		JsonArray addedFollowings = convertFollowingsListIntoJsonArray(followingsList);
 
+		// log...
 		addedFollowingsLog(addedFollowings);
 		deletedFollowingsLog(traverseRDFStore, deletedFollowingsJsonArrayString);
+
+		// convert added followings (new fetcher results) to json ld.
 		String jsonLDArray = new InstagramExtractor(addedFollowings.toString(),
 				getUserURI()).execute();
+
+		// send added and deleted followings of a person to storer...
 		send2Storer(deletedFollowingsJsonArrayString, jsonLDArray);
 	}
 
@@ -62,8 +68,13 @@ public class InstagramTracker extends Tracker {
 				deletedFollowingsJsonArrayString).executeFollowingsChange();
 	}
 
+	/**
+	 * Get followings of {@link InstagramTracker#response} from rdf store.
+	 * 
+	 * @return followings of a person which fetched from rdf store.
+	 */
 	public ResultSet getFollowingsFromRDFStore() {
-		String query = setFollowingsQuery(getUserURI());
+		String query = createPersonsFollowingsQuery(getUserURI());
 		ResultSet execSelect = RDFDataLayer.getInstance().execSelect(query);
 		return execSelect;
 	}
@@ -78,17 +89,29 @@ public class InstagramTracker extends Tracker {
 		}
 	}
 
-	private JsonArray convertStringListToJsonArray(List<String> traverseRDFStore) {
-		return new Gson().toJsonTree(traverseRDFStore,
-				new TypeToken<List<String>>() {
-				}.getType()).getAsJsonArray();
+	/**
+	 * Converts string list into json array.
+	 * 
+	 * @param list
+	 *            String list
+	 * @return json array.
+	 */
+	private JsonArray convertStringListToJsonArray(List<String> list) {
+		return new Gson().toJsonTree(list, new TypeToken<List<String>>() {
+		}.getType()).getAsJsonArray();
 	}
 
+	/**
+	 * Log for added new followings
+	 * 
+	 * @param addedFollowings
+	 *            added new followings json array.
+	 */
 	private void addedFollowingsLog(JsonArray addedFollowings) {
 		String msg;
 		if (addedFollowings.size() != 0) {
-			msg = "added new followings {\"jsonArray\":\"%s\"}";
-			getLogger().info(String.format(msg, addedFollowings));
+			msg = "added new followings {\"userURI\":\"%s\", \"jsonArray\":\"%s\"}";
+			getLogger().info(String.format(msg, getUserURI(), addedFollowings));
 		}
 	}
 
@@ -108,7 +131,8 @@ public class InstagramTracker extends Tracker {
 	}
 
 	/**
-	 * Traverse rdf store and compares followings of user with fetcher results.
+	 * Traverse rdf store and compares followings of user with
+	 * {@link InstagramTracker#getResponse()}.
 	 * 
 	 * @param execSelect
 	 *            RDF Store followings of people query results.
@@ -137,11 +161,25 @@ public class InstagramTracker extends Tracker {
 		return stoppedFollowingPeople;
 	}
 
+	/**
+	 * Traverse fetcher results. If fetcher results contains given userURI, then
+	 * that object contains user uri from fetcher results deleted.
+	 * 
+	 * @param followingsList
+	 *            Fetcher results as list.
+	 * @param followingUserUri
+	 *            userUri which one following of people from rdf store.
+	 * @return If fetcher results contains followingsUserUri then method returns
+	 *         true, otherwise it returns false.
+	 */
 	private boolean traverseFetcherResults(
 			List<InstagramApiJsonWrapper> followingsList,
 			String followingUserUri) {
 		boolean foundOnFetcherResult = false;
 		for (InstagramApiJsonWrapper instagramApiJsonWrapper : followingsList) {
+			// Instagram api returns only username, RDF store stores people's
+			// uris e.g. "http://instagram.com/username"
+			// so it contains username...
 			if (followingUserUri
 					.contains(instagramApiJsonWrapper.getUsername())) {
 				followingsList.remove(instagramApiJsonWrapper);
@@ -152,7 +190,13 @@ public class InstagramTracker extends Tracker {
 		return foundOnFetcherResult;
 	}
 
-	private List<InstagramApiJsonWrapper> getFollowingsAsList() {
+	/**
+	 * Creates followings list from fetcher results field as
+	 * {@link InstagramApiJsonWrapper} list.
+	 * 
+	 * @return List as {@link InstagramApiJsonWrapper}.
+	 */
+	private List<InstagramApiJsonWrapper> createFollowingsAsList() {
 		InstagramApiJsonWrapper[] instagramArray = new Gson().fromJson(
 				getResponse(), InstagramApiJsonWrapper[].class);
 		List<InstagramApiJsonWrapper> asList = new ArrayList<InstagramApiJsonWrapper>();
@@ -160,11 +204,23 @@ public class InstagramTracker extends Tracker {
 		return asList;
 	}
 
-	private String setFollowingsQuery(String userURI) {
+	/**
+	 * Creates a person's followings sparql query.
+	 * 
+	 * @param userURI
+	 *            The person's uri whose questioned followings
+	 * @return Sparql query string.
+	 */
+	private String createPersonsFollowingsQuery(String userURI) {
 		return "PREFIX schema: <http://schema.org/> Select ?p where {<"
 				+ userURI + "> schema:follows ?p } ";
 	}
 
+	/**
+	 * Retrieve user uri by using user id field via instagram api.
+	 * 
+	 * @return username uri.
+	 */
 	public String retrieveUserURI() {
 		String msg = "retrieving uri for user {\"userId\":\"%s\"}";
 		getLogger().debug(String.format(msg, getUserId()));
@@ -173,13 +229,15 @@ public class InstagramTracker extends Tracker {
 
 		String userName = "";
 
+		// If api founds sutiable username for that user id, append it to
+		// Instagram Base Url
 		JsonObject personDetailObject = new Gson().fromJson(requestDocument,
 				JsonObject.class);
 		if (personDetailObject.has("data")) {
 			JsonObject dataObject = personDetailObject.get("data")
 					.getAsJsonObject();
 			if (dataObject.has("username")) {
-				userName = "http://instagram.com/";
+				userName = INSTAGRAM_BASE_URL;
 				userName += dataObject.get("username").getAsString();
 			}
 		}

@@ -1,13 +1,16 @@
 package com.aliyesilkanat.stalker.storer.instagram;
 
+import com.aliyesilkanat.stalker.data.constants.FriendshipActivityLogConst;
 import com.aliyesilkanat.stalker.storer.Storer;
+import com.aliyesilkanat.stalker.storer.friendshipactivity.FriendshipActivityMysqlOperation;
 import com.aliyesilkanat.stalker.util.JsonLDUtils;
+import com.google.gson.JsonArray;
 import com.hp.hpl.jena.rdf.model.Model;
 
 public class InstagramStorer extends Storer {
-	public InstagramStorer(String content, String userUri,
-			String addedNewFollowings) {
-		super(content, userUri, addedNewFollowings);
+	public InstagramStorer(String addedNewFollowings, String userUri,
+			String deletedNewFollowings) {
+		super(addedNewFollowings, deletedNewFollowings, userUri);
 	}
 
 	public void fetchFriendsFromDb() {
@@ -16,17 +19,42 @@ public class InstagramStorer extends Storer {
 				+ "select * where {?s rdf:type schema:Person }";
 	}
 
-	public void catchContent() {
-		getLogger().debug(
-				String.format("Catching content {\"%s\"} ", getContent()));
-		// convert given json ld to a rdf model....
-		Model model = JsonLDUtils.convert2Model(getContent());
+	public void store() {
+		getLogger()
+				.info(String.format("Storing data {\"userUri\"\"%s\"} ",
+						getUserURI()));
+		if (!isEmptyJsonArray()) {
+			String msg = "added new followings {\"jsonldArray\":\"%s\"}";
+			getLogger().debug(String.format(msg, getAddedNewFollowings()));
+
+			addNewFollowings(getAddedNewFollowings());
+		}
 		// write content to virtuoso..
 		// writeModel2Virtuoso(model, chooseGraph(model));
 	}
 
-	public void executeFollowingsChange() {
-		// TODO Auto-generated method stub
+	private void addNewFollowings(JsonArray addedNewFollowings) {
 
+		// convert given json ld to a rdf model....
+		// Model model =
+		// JsonLDUtils.convert2Model(addedNewFollowings.toString());
+		new FriendshipActivityMysqlOperation(
+				FriendshipActivityLogConst.FRIENDSHIP_ACTIVITY_LOG_OPERATION_NAME,
+				FriendshipActivityLogConst.FRIENDSHIP_ACTIVITY_LOG_TABLE_NAME,
+				FriendshipActivityLogConst.ACTIVITY_NEW_FOLLOWING_ADDITION,
+				addedNewFollowings).execute();
+	}
+
+	/**
+	 * Compares a json array is empty or not...
+	 * 
+	 * @return is array empty?
+	 */
+	private boolean isEmptyJsonArray() {
+		return getAddedNewFollowings().toString().equals("[]");
+	}
+
+	public void executeFollowingsChange() {
+		store();
 	}
 }
