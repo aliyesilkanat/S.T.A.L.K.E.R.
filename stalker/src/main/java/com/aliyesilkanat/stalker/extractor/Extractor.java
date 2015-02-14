@@ -27,14 +27,14 @@ public abstract class Extractor {
 	/**
 	 * User id of person.
 	 */
-	private String userId;
+	private String userURI;
 
-	public Extractor(String friendsArray, String userId) {
+	public Extractor(String friendsArray, String userURI) {
 		this.setFriendsArray(new Gson().fromJson(friendsArray, JsonArray.class));
-		this.setUserId(userId);
+		this.setUserURI(userURI);
 	}
 
-	abstract public void execute();
+	abstract public String execute();
 
 	public JsonArray getFriendsArray() {
 		return friendsArray;
@@ -56,11 +56,11 @@ public abstract class Extractor {
 		this.friendsArrayLD = friendsArrayLD;
 	}
 
-	public String getUserId() {
-		return userId;
+	public String getUserURI() {
+		return userURI;
 	}
 
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setUserURI(String userURI) {
+		this.userURI = userURI;
 	}
 }

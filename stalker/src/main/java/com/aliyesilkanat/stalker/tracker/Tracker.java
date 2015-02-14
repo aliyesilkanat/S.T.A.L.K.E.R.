@@ -8,11 +8,11 @@ public abstract class Tracker {
 	/**
 	 * Followings as json array
 	 */
-	private String response;
+	protected String response;
 	/**
 	 * User id of person.
 	 */
-	private String userId;
+	protected String userId;
 
 	public Tracker(String response, String userId) {
 		this.setResponse(response);

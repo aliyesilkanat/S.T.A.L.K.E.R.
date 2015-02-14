@@ -1,33 +1,32 @@
 package com.aliyesilkanat.stalker.storer;
 
-import java.util.ArrayList;
-
 import org.apache.log4j.Logger;
 
-import virtuoso.jena.driver.VirtGraph;
-
-import com.aliyesilkanat.stalker.util.XSDDateTimeUtil;
-import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
-import com.hp.hpl.jena.graph.GraphUtil;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
-import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.rdf.model.StmtIterator;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 
 public abstract class Storer {
 
 	/**
-	 * JsonLd of followings.
+	 * JsonLd of added new followings.
 	 */
-	private String content;
+	private JsonArray addedNewFollowings;
+	/**
+	 * Deleted new followings of person as json array (Array contains only
+	 * userUris).
+	 */
+	private JsonArray deletedFollowings;
 	/**
 	 * User uri of person.
 	 */
 	private String userURI;
 
-	public Storer(String content, String userURI) {
-		this.setContent(content);
+	public Storer(String addedNewFollownigs, String deletedNewFollowings,
+			String userURI) {
+		this.setAddedNewFollowings(new Gson().fromJson(addedNewFollownigs,
+				JsonArray.class));
+		this.setDeletedFollowings(new Gson().fromJson(deletedNewFollowings,
+				JsonArray.class));
 		this.setUserURI(userURI);
 	}
 
@@ -37,12 +36,12 @@ public abstract class Storer {
 		return logger;
 	}
 
-	public String getContent() {
-		return content;
+	public JsonArray getAddedNewFollowings() {
+		return addedNewFollowings;
 	}
 
-	public void setContent(String content) {
-		this.content = content;
+	public void setAddedNewFollowings(JsonArray addedNewFollowings) {
+		this.addedNewFollowings = addedNewFollowings;
 	}
 
 	public String getUserURI() {
@@ -53,63 +52,12 @@ public abstract class Storer {
 		this.userURI = userURI;
 	}
 
-	/**
-	 * Writes given model to virtuoso.
-	 * 
-	 * @param model
-	 *            given {@link Model} instance.
-	 * @param virtGraph
-	 *            graph uri to store given model on it.s
-	 */
-	protected void writeModel2Virtuoso(Model model) {
-
-		try {
-			// TODO make a graph selection system...
-			
-			VirtGraph virtGraph = createVirtGraph(GraphConstants.TEST_GRAPH);
-			// log..
-			getLogger().info(
-					String.format("Storing into \"%s\" graph, model \"%s\"",
-							virtGraph.getGraphName(), model));
-			// change data and times in model..
-			StmtIterator statements = model.listStatements();
-			ArrayList<Triple> triples = new ArrayList<Triple>();
-			while (statements.hasNext()) {
-				Statement statement = (Statement) statements.next();
-				// if statent contains a time convert it to xsd:dateTime.
-				String timeProperty = statement.getPredicate().getURI();
-				if (timeProperty.contains("commentTime")
-						|| timeProperty.contains("datePublished")) {
-					// Create xsd:dateTime..
-					XSDDateTime xsdDateTime = XSDDateTimeUtil
-							.convert2XsdDate(statement.getObject().toString());
-					triples.add(ResourceFactory.createStatement(
-							statement.getSubject(), statement.getPredicate(),
-							ResourceFactory.createTypedLiteral(xsdDateTime))
-							.asTriple());
-				} else {
-					// add to triple list..
-					triples.add(statement.asTriple());
-				}
-			}
-			// add to virtuoso..
-			GraphUtil.add(virtGraph, triples);
-			if (getLogger().isDebugEnabled()) {
-				// log..
-				getLogger().debug(
-						String.format("Stored model into \"%s\" graph.",
-								virtGraph.getGraphName()));
-			}
-		} catch (Exception e) {
-			// log..
-			getLogger().error(
-					"Occured exception while writing model to virtuoso: ", e);
-		}
+	public JsonArray getDeletedFollowings() {
+		return deletedFollowings;
 	}
 
-	private VirtGraph createVirtGraph(String graphURI) {
-		return new VirtGraph(graphURI, "jdbc:virtuoso://54.213.0.71:1111",
-				"dba", "dba");
+	public void setDeletedFollowings(JsonArray deletedFollowings) {
+		this.deletedFollowings = deletedFollowings;
 	}
 
 }

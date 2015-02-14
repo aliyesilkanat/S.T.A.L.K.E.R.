@@ -4,6 +4,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 
 import org.apache.log4j.Logger;
 
@@ -29,9 +31,11 @@ public class JsonLDUtils {
 	public static Object getRdf(String jsonLD) {
 		Object expectedRdfStr = null;
 		try {
-			// log..
-			logger.trace(String.format("Getting rdf from jsonld: \"%s\"",
-					jsonLD));
+			if (logger.isTraceEnabled()) {
+				// log..
+				logger.trace(String.format("Getting rdf from jsonld: \"%s\"",
+						jsonLD));
+			}
 			// get rdf..
 			Object jsonLdObj = JsonUtils.fromString(jsonLD);
 			expectedRdfStr = JsonLdProcessor.toRDF(jsonLdObj,
@@ -41,9 +45,11 @@ public class JsonLDUtils {
 							return nQuads;
 						}
 					});
-			// log..
-			logger.debug(String.format("Got rdf from jsonld: \"%s\".",
-					expectedRdfStr.toString()));
+			if (logger.isDebugEnabled()) {
+				// log..
+				logger.debug(String.format("Got rdf from jsonld: \"%s\".",
+						expectedRdfStr.toString()));
+			}
 		} catch (Exception e) {
 			logger.error("Occured exception while getting rdf from json-ld.", e);
 		}
@@ -78,12 +84,16 @@ public class JsonLDUtils {
 		Model model = ModelFactory.createDefaultModel();
 		// get json ld content as rdf..
 		Object rdf = getRdf(modelStr);
-		// log..
-		logger.trace(String.format("Converting nquads to model: \"%s\"",
-				rdf.toString()));
+		if (logger.isTraceEnabled()) {
+			// log..
+			logger.trace(String.format("Converting nquads to model: \"%s\"",
+					rdf.toString()));
+		}
 		// read to model..
 		InputStream is = new ByteArrayInputStream(rdf.toString().getBytes());
-		model.read(is, "", FileUtils.langNTriple);
+		InputStreamReader reader = null;
+			reader = new InputStreamReader(is);
+		model.read(reader, "", FileUtils.langNTriple);
 		// log..
 		logger.debug("Converted nquads to model.");
 		return model;
