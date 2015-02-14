@@ -5,7 +5,9 @@ import java.sql.Statement;
 
 public interface RelationalOperation {
 
-	void execute(Statement statement, Object data) throws SQLException;
+	public void execute(Statement statement, Object data, String userUri)
+			throws SQLException;
 
-	String createSQLQuery(String userUri, String tableName, int activityType);
+	public String createSQLQuery(String userUri, String followingUserUri,
+			String tableName, int activityType);
 }

@@ -4,6 +4,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 
 import org.apache.log4j.Logger;
 
@@ -89,7 +91,9 @@ public class JsonLDUtils {
 		}
 		// read to model..
 		InputStream is = new ByteArrayInputStream(rdf.toString().getBytes());
-		model.read(is, "", FileUtils.langNTriple);
+		InputStreamReader reader = null;
+			reader = new InputStreamReader(is);
+		model.read(reader, "", FileUtils.langNTriple);
 		// log..
 		logger.debug("Converted nquads to model.");
 		return model;

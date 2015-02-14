@@ -34,12 +34,11 @@ public class VirtuosoConnector {
 	 * @param virtGraph
 	 *            graph uri to store given model on it.s
 	 */
-	protected void writeModel2Virtuoso(Model model) {
+	public void writeModel2Virtuoso(Model model, String graph) {
 
 		try {
-			// TODO make a graph selection system...
 
-			VirtGraph virtGraph = createVirtGraph(GraphConstants.TEST_GRAPH);
+			VirtGraph virtGraph = createVirtGraph(graph);
 			// log..
 			getLogger().info(
 					String.format("Storing into \"%s\" graph, model \"%s\"",
@@ -85,22 +84,16 @@ public class VirtuosoConnector {
 		ResultSet selectFromEndpoint = null;
 		try {
 			selectFromEndpoint = DBUtils.selectFromEndpoint(query);
-			if (selectFromEndpoint != null) {
-				// convert resultset to json..
-				ByteArrayOutputStream b = new ByteArrayOutputStream();
-				ResultSetFormatter.outputAsJSON(b, selectFromEndpoint);
-				String json = b.toString("UTF-8");
-				msg = "query results {\"results\":\"%s\"}";
-				getLogger().debug(String.format(msg, json));
-			}
+
 		} catch (Exception e) {
 			msg = "error while executing query on endpoint {\"query\":\"%s\"}";
 			getLogger().error(String.format(msg, query), e);
 		}
+
 		return selectFromEndpoint;
 	}
 
-	private VirtGraph createVirtGraph(String graphURI) {
+	public VirtGraph createVirtGraph(String graphURI) {
 		return new VirtGraph(graphURI, VIRTUOSO_JDBC_CONNECTION,
 				VIRTUOSO_USER_NAME, VIRTUOSO_USER_PASSWORD);
 	}
