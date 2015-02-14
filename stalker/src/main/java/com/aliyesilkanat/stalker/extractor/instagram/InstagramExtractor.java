@@ -22,7 +22,7 @@ public class InstagramExtractor extends Extractor {
 		getLogger().info(String.format(msg, getFriendsArray()));
 
 		JsonArray followingsJsonLd = convertJsonArrayIntoJsonLdArray();
-
+		setFriendsArrayLD(followingsJsonLd);
 		msg = "converted jsons into jsonld {\"jsonld\":\"%s\"}";
 		getLogger().debug(String.format(msg, followingsJsonLd));
 
