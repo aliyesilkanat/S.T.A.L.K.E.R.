@@ -1,20 +1,17 @@
 package com.aliyesilkanat.stalker.data.connector;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
 
 import virtuoso.jena.driver.VirtGraph;
 
-import com.aliyesilkanat.stalker.storer.DBUtils;
-import com.aliyesilkanat.stalker.storer.GraphConstants;
+import com.aliyesilkanat.stalker.util.DBUtils;
 import com.aliyesilkanat.stalker.util.XSDDateTimeUtil;
 import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
 import com.hp.hpl.jena.graph.GraphUtil;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.rdf.model.Statement;
