@@ -1,4 +1,4 @@
-package com.aliyesilkanat.stalker.storer;
+package com.aliyesilkanat.stalker.util;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
