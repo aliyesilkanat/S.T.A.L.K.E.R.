@@ -4,11 +4,11 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import com.aliyesilkanat.stalker.trigger.instagram.FollowingsTrigger;
+import com.aliyesilkanat.stalker.trigger.instagram.InstagramFollowingsTrigger;
 
 public class AllSystemInstagram {
 	@Test
 	public void checkIntegration() throws Exception {
-		new FollowingsTrigger("239984780").execute();
+		new InstagramFollowingsTrigger("239984780").execute();
 	}
 }

@@ -1,6 +1,5 @@
 package com.aliyesilkanat.stalker.storer.friendshipactivity;
 
-import org.apache.jena.iri.impl.Main;
 import org.junit.Test;
 import org.mockito.Mockito;
 

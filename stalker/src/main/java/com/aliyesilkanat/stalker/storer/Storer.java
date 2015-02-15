@@ -4,13 +4,14 @@ import org.apache.log4j.Logger;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 public abstract class Storer {
 
 	/**
 	 * JsonLd of added new followings.
 	 */
-	private JsonArray addedNewFollowings;
+	private JsonObject addedNewFollowings;
 	/**
 	 * Deleted new followings of person as json array (Array contains only
 	 * userUris).
@@ -24,7 +25,7 @@ public abstract class Storer {
 	public Storer(String addedNewFollownigs, String deletedNewFollowings,
 			String userURI) {
 		this.setAddedNewFollowings(new Gson().fromJson(addedNewFollownigs,
-				JsonArray.class));
+				JsonObject.class));
 		this.setDeletedFollowings(new Gson().fromJson(deletedNewFollowings,
 				JsonArray.class));
 		this.setUserURI(userURI);
@@ -36,11 +37,11 @@ public abstract class Storer {
 		return logger;
 	}
 
-	public JsonArray getAddedNewFollowings() {
+	public JsonObject getAddedNewFollowings() {
 		return addedNewFollowings;
 	}
 
-	public void setAddedNewFollowings(JsonArray addedNewFollowings) {
+	public void setAddedNewFollowings(JsonObject addedNewFollowings) {
 		this.addedNewFollowings = addedNewFollowings;
 	}
 

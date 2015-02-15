@@ -29,9 +29,15 @@ public abstract class Extractor {
 	 */
 	private String userURI;
 
-	public Extractor(String friendsArray, String userURI) {
+	/**
+	 * User json object came from API. Used for linkage between followings.
+	 */
+	private String userApiJson;
+
+	public Extractor(String friendsArray, String userURI, String userApiJson) {
 		this.setFriendsArray(new Gson().fromJson(friendsArray, JsonArray.class));
 		this.setUserURI(userURI);
+		this.setUserApiJson(userApiJson);
 	}
 
 	abstract public String execute();
@@ -62,5 +68,13 @@ public abstract class Extractor {
 
 	public void setUserURI(String userURI) {
 		this.userURI = userURI;
+	}
+
+	public String getUserApiJson() {
+		return userApiJson;
+	}
+
+	public void setUserApiJson(String userApiJson) {
+		this.userApiJson = userApiJson;
 	}
 }

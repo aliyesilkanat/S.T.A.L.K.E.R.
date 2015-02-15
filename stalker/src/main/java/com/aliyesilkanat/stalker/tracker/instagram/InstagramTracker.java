@@ -25,6 +25,11 @@ public class InstagramTracker extends Tracker {
 	 * UserUri which extracted by using user id via instagram api.
 	 */
 	private String userURI;
+	/**
+	 * Json object which comes from Instagram Api... It's used on linking
+	 * followings and this user.
+	 */
+	private JsonObject userApiObject;
 
 	public InstagramTracker(String fetcherResponse, String userId) {
 		super(fetcherResponse, userId);
@@ -55,11 +60,11 @@ public class InstagramTracker extends Tracker {
 		deletedFollowingsLog(traverseRDFStore, deletedFollowingsJsonArrayString);
 
 		// convert added followings (new fetcher results) to json ld.
-		String jsonLDArray = new InstagramExtractor(addedFollowings.toString(),
-				getUserURI()).execute();
+		String jsonLDObject = new InstagramExtractor(addedFollowings.toString(),
+				getUserURI(), getUserApiObject().toString()).execute();
 
 		// send added and deleted followings of a person to storer...
-		send2Storer(deletedFollowingsJsonArrayString, jsonLDArray);
+		send2Storer(deletedFollowingsJsonArrayString, jsonLDObject);
 	}
 
 	public void send2Storer(String deletedFollowingsJsonArrayString,
@@ -240,6 +245,8 @@ public class InstagramTracker extends Tracker {
 				userName = INSTAGRAM_BASE_URL;
 				userName += dataObject.get("username").getAsString();
 			}
+			this.setUserApiObject(dataObject);
+
 		}
 		return userName;
 	}
@@ -250,5 +257,13 @@ public class InstagramTracker extends Tracker {
 
 	public void setUserURI(String userURI) {
 		this.userURI = userURI;
+	}
+
+	public JsonObject getUserApiObject() {
+		return userApiObject;
+	}
+
+	public void setUserApiObject(JsonObject userApiObject) {
+		this.userApiObject = userApiObject;
 	}
 }

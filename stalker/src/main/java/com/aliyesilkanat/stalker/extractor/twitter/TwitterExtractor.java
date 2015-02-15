@@ -13,7 +13,7 @@ public class TwitterExtractor extends Extractor {
 	private static final String TWITTER_BASED_URL = "http://twitter.com/";
 
 	public TwitterExtractor(String friendsArray, String userId) {
-		super(friendsArray, userId);
+		super(friendsArray, userId, "");
 	}
 
 	@Override

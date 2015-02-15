@@ -2,6 +2,7 @@ package com.aliyesilkanat.stalker.extractor.instagram;
 
 import com.aliyesilkanat.stalker.extractor.Extractor;
 import com.aliyesilkanat.stalker.util.Tag;
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -12,8 +13,9 @@ public class InstagramExtractor extends Extractor {
 	private static final String INSTAGRAM_BASED_URL = "http://instagram.com/";
 	private static final String PROFILE_PICTURE = "profile_picture";
 
-	public InstagramExtractor(String friendsArray, String userURI) {
-		super(friendsArray, userURI);
+	public InstagramExtractor(String friendsArray, String userURI,
+			String userApiJson) {
+		super(friendsArray, userURI, userApiJson);
 	}
 
 	@Override
@@ -21,21 +23,26 @@ public class InstagramExtractor extends Extractor {
 		String msg = "converting json into jsonld {\"json\":\"%s\"}";
 		getLogger().info(String.format(msg, getFriendsArray()));
 
-		JsonArray followingsJsonLd = convertJsonArrayIntoJsonLdArray();
-		setFriendsArrayLD(followingsJsonLd);
+		JsonObject followingsJsonLd = convertJsonArrayIntoJsonLdArray(new Gson()
+				.fromJson(getUserApiJson(), JsonObject.class));
+
 		msg = "converted jsons into jsonld {\"jsonld\":\"%s\"}";
 		getLogger().debug(String.format(msg, followingsJsonLd));
 
 		return followingsJsonLd.toString();
 	}
 
-	private JsonArray convertJsonArrayIntoJsonLdArray() {
+	private JsonObject convertJsonArrayIntoJsonLdArray(JsonObject userObject) {
+		JsonObject userObjectLd = fillJsonLdObject(userObject);
 		JsonArray userArrayLD = new JsonArray();
 		for (JsonElement jsonElement : getFriendsArray()) {
 			JsonObject userObjectRaw = jsonElement.getAsJsonObject();
 			userArrayLD.add(fillJsonLdObject(userObjectRaw));
 		}
-		return userArrayLD;
+		setFriendsArrayLD(userArrayLD);
+		// setting link between user and it's followings...
+		userObjectLd.add(Tag.FOLLOWS.text(), userArrayLD);
+		return userObjectLd;
 	}
 
 	/**
@@ -45,7 +52,7 @@ public class InstagramExtractor extends Extractor {
 	 *            raw json object comes from instagram api.
 	 * @return JsonLD object contains data about person.
 	 */
-	private JsonObject fillJsonLdObject(JsonObject userObjectRaw) {
+	public JsonObject fillJsonLdObject(JsonObject userObjectRaw) {
 		JsonObject userObjectLD = new JsonObject();
 		userObjectLD.addProperty(Tag.CONTEXT.text(), Tag.SCHEMA.text());
 		userObjectLD.addProperty(Tag.ID.text(), setUserUri(userObjectRaw));

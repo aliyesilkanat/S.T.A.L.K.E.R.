@@ -7,12 +7,13 @@ import com.aliyesilkanat.stalker.fetcher.twitter.TwitterFetcher;
 import com.aliyesilkanat.stalker.util.FileUtil;
 
 public class TwitterFetcherTest {
-	
+
 	/**
-	 * @author Iþýk Erhan
+	 * @author Isik Erhan
 	 */
-	
+
 	private static final String userID = "3032812463";
+
 	@Test
 	public void fetchTest() throws Exception {
 		String response = new TwitterFetcher().requestFollowings(userID);

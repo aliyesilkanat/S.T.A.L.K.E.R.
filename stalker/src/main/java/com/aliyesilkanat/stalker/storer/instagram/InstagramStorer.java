@@ -8,7 +8,11 @@ import com.aliyesilkanat.stalker.storer.GraphConstants;
 import com.aliyesilkanat.stalker.storer.Storer;
 import com.aliyesilkanat.stalker.storer.friendshipactivity.FriendshipActivityMysqlOperation;
 import com.aliyesilkanat.stalker.util.JsonLDUtils;
+import com.aliyesilkanat.stalker.util.Tag;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.hp.hpl.jena.graph.NodeFactory;
 import com.hp.hpl.jena.rdf.model.Model;
 
 public class InstagramStorer extends Storer {
@@ -27,18 +31,34 @@ public class InstagramStorer extends Storer {
 		getLogger()
 				.info(String.format("Storing data {\"userUri\"\"%s\"} ",
 						getUserURI()));
-		if (!isEmptyJsonArray(getAddedNewFollowings())) {
+		if (!hasNewFollowings(getAddedNewFollowings())) {
 			String msg = "added new followings {\"jsonldArray\":\"%s\"}";
 			getLogger().debug(String.format(msg, getAddedNewFollowings()));
 			addNewFollowings(getAddedNewFollowings());
-			// write content to virtuoso..
-			// writeModel2Virtuoso(model, chooseGraph(model));
 		}
+
 		if (!isEmptyJsonArray(getDeletedFollowings())) {
 			String msg = "deleted followings {\"jsonArray\":\"%s\"}";
 			getLogger().debug(String.format(msg, getDeletedFollowings()));
 			addDeletedFollowings(getDeletedFollowings());
+
+			// delete following triple from rdf store...
+			deleteFromRdfStore(getUserURI(), getDeletedFollowings(),
+					chooseGraph());
+
 		}
+	}
+
+	/**
+	 * Checks if user has new followings.
+	 * 
+	 * @param userObject
+	 *            User object contains follow predicate
+	 * @return boolean result new followings or not.
+	 */
+	private boolean hasNewFollowings(JsonObject userObject) {
+		return isEmptyJsonArray(userObject.get(Tag.FOLLOWS.text())
+				.getAsJsonArray());
 	}
 
 	private void addDeletedFollowings(JsonArray deletedFollowings) {
@@ -49,7 +69,7 @@ public class InstagramStorer extends Storer {
 				deletedFollowings, getUserURI()).execute();
 	}
 
-	private void addNewFollowings(JsonArray addedNewFollowings) {
+	private void addNewFollowings(JsonObject addedNewFollowings) {
 
 		// convert given json ld to a rdf model....
 		addToRdfStore(addedNewFollowings, chooseGraph());
@@ -57,14 +77,15 @@ public class InstagramStorer extends Storer {
 				FriendshipActivityLogConst.FRIENDSHIP_ACTIVITY_LOG_OPERATION_NAME,
 				FriendshipActivityLogConst.FRIENDSHIP_ACTIVITY_LOG_TABLE_NAME,
 				FriendshipActivityLogConst.ACTIVITY_NEW_FOLLOWING_ADDITION,
-				addedNewFollowings, getUserURI()).execute();
+				addedNewFollowings.get(Tag.FOLLOWS.text()).getAsJsonArray(),
+				getUserURI()).execute();
 	}
 
 	public String chooseGraph() {
 		return GraphConstants.FRIENDSHIP_ACTIVITY;
 	}
 
-	public void addToRdfStore(JsonArray addedNewFollowings, String graphName) {
+	public void addToRdfStore(JsonObject addedNewFollowings, String graphName) {
 		Model model = JsonLDUtils.convert2Model(addedNewFollowings.toString());
 		RDFDataLayer.getInstance().writeModel2Virtuoso(model, graphName);
 	}
@@ -82,7 +103,34 @@ public class InstagramStorer extends Storer {
 		store();
 	}
 
-	public void deleteFromRdfStore(JsonArray deletedFollowings, String graphUri) {
-		VirtGraph graph = RDFDataLayer.getInstance().createVirtGraph(graphUri);
+	public void deleteFromRdfStore(String userUri, JsonArray deletedFollowings,
+			String graphUri) {
+		String msg = "deleting followings from Rdf store {\"userUri\":\"%s\", \"deleted followings\",\"%s\"}";
+		getLogger().info(
+				String.format(msg, userUri, deletedFollowings.toString()));
+		try {
+			VirtGraph graph = RDFDataLayer.getInstance().createVirtGraph(
+					graphUri);
+			for (JsonElement userElement : deletedFollowings) {
+				String deletedFollowingsUserUri = userElement.getAsString();
+				if (getLogger().isTraceEnabled()) {
+					msg = "deleting followings {\"userUri\":\"%s\", \"deletedUser\":\"%s\"}";
+					getLogger().trace(
+							String.format(msg, userUri,
+									deletedFollowingsUserUri));
+				}
+				graph.remove(NodeFactory.createURI(userUri),
+						NodeFactory.createURI("http://schema.org/follows"),
+						NodeFactory.createURI(deletedFollowingsUserUri));
+			}
+		} catch (Exception e) {
+			msg = "error while deleteing followings {\"userUri\":\"%s\", \"deleted followings\":\"%s\"}";
+			getLogger().error(String.format(msg, userUri, deletedFollowings));
+		}
+		if (getLogger().isDebugEnabled()) {
+			msg = "deleted followings {\"userUri\":\"%s\", \"followings\":\"%s\"}";
+			getLogger().debug(String.format(msg, userUri, deletedFollowings));
+		}
+
 	}
 }

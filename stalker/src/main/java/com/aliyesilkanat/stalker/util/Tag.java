@@ -56,6 +56,12 @@ public enum Tag {
 		public String text() {
 			return "name";
 		}
+	},
+	FOLLOWS {
+		@Override
+		public String text() {
+			return "follows";
+		}
 	};
 
 	public abstract String text();
