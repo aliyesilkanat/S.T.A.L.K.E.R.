@@ -1,0 +1,10 @@
+@CHARSET "UTF-8";
+
+.jumbotron {
+	background-image: url(../img/graphforcedlayout.png);
+	background-origin: border-box;
+	background-position: center;
+	background-color: white;
+	min-height: 300px;
+	padding-top: 100px;
+}
