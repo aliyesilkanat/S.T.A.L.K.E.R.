@@ -6,11 +6,16 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.log4j.PropertyConfigurator;
+
 import com.aliyesilkanat.stalker.trigger.instagram.InstagramFollowingsTrigger;
 
 public class Starter {
 
 	public static void main(String[] args) {
+		//setting log4j properties
+		PropertyConfigurator.configure(Starter.class.getClassLoader()
+				.getResource("log4j.properties"));
 		List<String> setStalkedPeople = setStalkedPeople();
 		ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 		executor.scheduleAtFixedRate(new Runnable() {

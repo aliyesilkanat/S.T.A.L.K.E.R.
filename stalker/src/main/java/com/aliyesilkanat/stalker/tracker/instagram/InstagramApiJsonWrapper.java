@@ -1,4 +1,4 @@
-package com.aliyesilkanat.stalker.util.wrapper;
+package com.aliyesilkanat.stalker.tracker.instagram;
 
 public class InstagramApiJsonWrapper {
 	private String username;

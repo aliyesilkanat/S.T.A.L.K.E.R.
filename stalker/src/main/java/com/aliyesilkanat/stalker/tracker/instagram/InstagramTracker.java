@@ -10,7 +10,6 @@ import com.aliyesilkanat.stalker.extractor.instagram.InstagramExtractor;
 import com.aliyesilkanat.stalker.retriever.Retriever;
 import com.aliyesilkanat.stalker.storer.instagram.InstagramStorer;
 import com.aliyesilkanat.stalker.tracker.Tracker;
-import com.aliyesilkanat.stalker.util.wrapper.InstagramApiJsonWrapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
