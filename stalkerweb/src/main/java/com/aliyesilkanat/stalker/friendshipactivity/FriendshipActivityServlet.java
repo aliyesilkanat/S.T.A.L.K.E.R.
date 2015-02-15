@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.aliyesilkanat.stalker.data.constants.FriendshipActivityLogConst;
+
 /**
  * Servlet implementation class FriendshipActivityServlet
  */
@@ -29,6 +31,10 @@ public class FriendshipActivityServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		String userId = request.getParameter("userId");
+		String query = "select * from "
+				+ FriendshipActivityLogConst.FRIENDSHIP_ACTIVITY_LOG_TABLE_NAME
+				+ " where " + "'UserID'=" + userId;
+		
 
 	}
 

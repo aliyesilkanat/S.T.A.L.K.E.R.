@@ -1,4 +1,4 @@
-var myApp = angular.module('app', []);
+var myApp = angular.module('app.homeCtrl', []);
 
 myApp.controller('HomeCtrl', [ '$scope', function($scope) {
 
