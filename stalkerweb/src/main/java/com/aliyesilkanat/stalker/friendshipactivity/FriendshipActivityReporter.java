@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.util.Date;
 
 import org.apache.log4j.Logger;
 
@@ -16,6 +17,16 @@ import com.google.gson.JsonObject;
 public class FriendshipActivityReporter {
 
 	private final Logger logger = Logger.getLogger(getClass());
+
+	private long startDate;
+	private long endDate;
+	private int numberOfFollowings;
+	
+	public FriendshipActivityReporter(long startDate, long endDate) {
+		this.startDate = startDate;
+		this.endDate = endDate;
+		numberOfFollowings = 0;
+	}
 
 	private void closeConnection(Connection createConnection,
 			Statement statement) {
@@ -56,6 +67,7 @@ public class FriendshipActivityReporter {
 		stringBuilder.append("UserUri='");
 		stringBuilder.append(userURI);
 		stringBuilder.append("'");
+		stringBuilder.append("order by Time");
 		String query = stringBuilder.toString();
 		String msg = "created mysql query for user {\"uri\":\"\"}";
 		getLogger().trace(String.format(msg, userURI));
@@ -127,8 +139,15 @@ public class FriendshipActivityReporter {
 			throws SQLException {
 		JsonObject followingObject = new JsonObject();
 		followingObject.addProperty("UserUri", extractUserUri(resultSet));
-		followingObject.addProperty("Activity", extractActivity(resultSet));
-		followingObject.addProperty("Time", extractTime(resultSet).toString());
+		int activity = extractActivity(resultSet);
+		followingObject.addProperty("Activity", activity);
+		if(activity == 1)
+			numberOfFollowings++;
+		else numberOfFollowings--;
+		followingObject.addProperty("Followings", numberOfFollowings);
+		Date time = extractTime(resultSet);
+		followingObject.addProperty("Time", time.toString());
+		followingObject.addProperty("TimeScale", ((double)(time.getTime() - startDate)/(endDate - startDate) * 100));
 		return followingObject;
 	}
 
