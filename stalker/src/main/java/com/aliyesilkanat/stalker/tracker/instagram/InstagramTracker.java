@@ -60,8 +60,9 @@ public class InstagramTracker extends Tracker {
 		deletedFollowingsLog(traverseRDFStore, deletedFollowingsJsonArrayString);
 
 		// convert added followings (new fetcher results) to json ld.
-		String jsonLDObject = new InstagramExtractor(addedFollowings.toString(),
-				getUserURI(), getUserApiObject().toString()).execute();
+		String jsonLDObject = new InstagramExtractor(
+				addedFollowings.toString(), getUserURI(), getUserApiObject()
+						.toString()).execute();
 
 		// send added and deleted followings of a person to storer...
 		send2Storer(deletedFollowingsJsonArrayString, jsonLDObject);
@@ -79,7 +80,8 @@ public class InstagramTracker extends Tracker {
 	 * @return followings of a person which fetched from rdf store.
 	 * @throws UnfinishedOperationException
 	 */
-	public ResultSet getFollowingsFromRDFStore() throws UnfinishedOperationException {
+	public ResultSet getFollowingsFromRDFStore()
+			throws UnfinishedOperationException {
 		String query = createPersonsFollowingsQuery(getUserURI());
 		ResultSet execSelect = RDFDataLayer.getInstance().execSelect(query);
 		return execSelect;
@@ -249,6 +251,8 @@ public class InstagramTracker extends Tracker {
 			}
 			this.setUserApiObject(dataObject);
 
+		} else {
+			throw new UnfinishedOperationException();
 		}
 		return userName;
 	}
