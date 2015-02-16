@@ -1,5 +1,6 @@
 package com.aliyesilkanat.stalker.fetcher.instagram;
 
+import com.aliyesilkanat.stalker.data.UnfinishedOperationException;
 import com.aliyesilkanat.stalker.endpoint.EndpointUtils;
 import com.aliyesilkanat.stalker.fetcher.Fetcher;
 import com.aliyesilkanat.stalker.retriever.Retriever;
@@ -15,19 +16,23 @@ import com.google.gson.JsonObject;
  */
 public class InstagramFetcher extends Fetcher {
 
+	public InstagramFetcher(String userId) {
+		super(userId);
+	}
+
 	@Override
-	public void fetch(String userId) {
+	protected void executeAction() throws UnfinishedOperationException{
 		String msg = "fetching friends {\"friend Id\":\"%s\"}";
-		getLogger().info(String.format(msg, userId));
+		getLogger().info(String.format(msg, getUserId()));
 
 		// fetches followings of a person.
-		String response = requestFollowings(userId);
+		String response = requestFollowings(getUserId());
 
 		if (getLogger().isTraceEnabled()) {
 			msg = "fetched friends {\"userId\":\"%s\", \"responseJson\":\"%s\"}";
-			getLogger().trace(String.format(msg, userId, response));
+			getLogger().trace(String.format(msg, getUserId(), response));
 		}
-		new InstagramTracker(response, userId).catchChange();
+		new InstagramTracker(response, getUserId()).execute();
 	}
 
 	/**
@@ -36,8 +41,9 @@ public class InstagramFetcher extends Fetcher {
 	 * @param userId
 	 *            Id of User
 	 * @return Json Array as String.
+	 * @throws UnfinishedOperationException
 	 */
-	public String requestFollowings(String userId) {
+	public String requestFollowings(String userId) throws UnfinishedOperationException {
 		// gets initial request uri for given user...
 		String initialRequestUri = EndpointUtils.getInstance()
 				.setUriForFetchingFollowings(userId);
@@ -91,9 +97,10 @@ public class InstagramFetcher extends Fetcher {
 	 *            result object of api.
 	 * @param resultArray
 	 * @return result object of api for given uri.
+	 * @throws UnfinishedOperationException
 	 */
 	private JsonObject addOtherPages(String initialRequestUri,
-			JsonObject apiResultJsonObject, JsonArray resultArray) {
+			JsonObject apiResultJsonObject, JsonArray resultArray) throws UnfinishedOperationException {
 		// add next pages cursor param to initial request uri.
 		String addParameterToUri = getNextUri(apiResultJsonObject,
 				initialRequestUri);
@@ -105,7 +112,8 @@ public class InstagramFetcher extends Fetcher {
 		return apiResultJsonObject;
 	}
 
-	private String getDocument(String addParameterToUri) {
+	private String getDocument(String addParameterToUri)
+			throws UnfinishedOperationException {
 		String nextResultPage = new Retriever()
 				.requestDocument(addParameterToUri);
 		return nextResultPage;
@@ -146,8 +154,9 @@ public class InstagramFetcher extends Fetcher {
 	 * @param initialRequestUri
 	 *            requested uri.
 	 * @return Extracted json.
+	 * @throws UnfinishedOperationException
 	 */
-	public JsonObject getJsonFromApi(String initialRequestUri) {
+	public JsonObject getJsonFromApi(String initialRequestUri) throws UnfinishedOperationException {
 		String response = getDocument(initialRequestUri);
 		JsonObject apiResultJsonObject = new Gson().fromJson(response,
 				JsonObject.class);

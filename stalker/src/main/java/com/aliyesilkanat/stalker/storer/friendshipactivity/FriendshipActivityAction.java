@@ -5,6 +5,7 @@ import java.sql.Statement;
 
 import org.apache.log4j.Logger;
 
+import com.aliyesilkanat.stalker.data.UnfinishedOperationException;
 import com.aliyesilkanat.stalker.data.constants.FriendshipActivityLogConst;
 import com.aliyesilkanat.stalker.storer.relational.RelationalOperation;
 import com.google.gson.JsonArray;
@@ -35,11 +36,11 @@ public class FriendshipActivityAction implements RelationalOperation {
 	 *            Sql {@link Statement} for executing query.
 	 * @param addedNewFollowings
 	 *            added new followings as {@link JsonArray}.
-	 * @throws SQLException
+	 * @throws UnfinishedOperationException
 	 */
 	@Override
 	public void execute(Statement statement, Object data, String userUri)
-			throws SQLException {
+			throws UnfinishedOperationException {
 		JsonArray addedNewFollowings = (JsonArray) data;
 		for (JsonElement jsonElement : addedNewFollowings) {
 			String query = null;
@@ -69,6 +70,7 @@ public class FriendshipActivityAction implements RelationalOperation {
 			} catch (Exception e) {
 				String msg = "cannot insert to mysql {\"query\":\"%s\"}";
 				getLogger().error(String.format(msg, query), e);
+				throw new UnfinishedOperationException();
 			}
 		}
 	}

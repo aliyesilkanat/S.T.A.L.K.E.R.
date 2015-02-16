@@ -3,6 +3,7 @@ package com.aliyesilkanat.stalker.storer.instagram;
 import virtuoso.jena.driver.VirtGraph;
 
 import com.aliyesilkanat.stalker.data.RDFDataLayer;
+import com.aliyesilkanat.stalker.data.UnfinishedOperationException;
 import com.aliyesilkanat.stalker.data.constants.FriendshipActivityLogConst;
 import com.aliyesilkanat.stalker.storer.GraphConstants;
 import com.aliyesilkanat.stalker.storer.Storer;
@@ -27,7 +28,8 @@ public class InstagramStorer extends Storer {
 				+ "select * where {?s rdf:type schema:Person }";
 	}
 
-	public void store() {
+	@Override
+	public void executeAction() throws UnfinishedOperationException {
 		getLogger()
 				.info(String.format("Storing data {\"userUri\"\"%s\"} ",
 						getUserURI()));
@@ -69,7 +71,8 @@ public class InstagramStorer extends Storer {
 				deletedFollowings, getUserURI()).execute();
 	}
 
-	private void addNewFollowings(JsonObject addedNewFollowings) {
+	private void addNewFollowings(JsonObject addedNewFollowings)
+			throws UnfinishedOperationException {
 
 		// convert given json ld to a rdf model....
 		addToRdfStore(addedNewFollowings, chooseGraph());
@@ -85,7 +88,8 @@ public class InstagramStorer extends Storer {
 		return GraphConstants.FRIENDSHIP_ACTIVITY;
 	}
 
-	public void addToRdfStore(JsonObject addedNewFollowings, String graphName) {
+	public void addToRdfStore(JsonObject addedNewFollowings, String graphName)
+			throws UnfinishedOperationException {
 		Model model = JsonLDUtils.convert2Model(addedNewFollowings.toString());
 		RDFDataLayer.getInstance().writeModel2Virtuoso(model, graphName);
 	}
@@ -97,10 +101,6 @@ public class InstagramStorer extends Storer {
 	 */
 	private boolean isEmptyJsonArray(JsonArray array) {
 		return array.toString().equals("[]");
-	}
-
-	public void executeFollowingsChange() {
-		store();
 	}
 
 	public void deleteFromRdfStore(String userUri, JsonArray deletedFollowings,

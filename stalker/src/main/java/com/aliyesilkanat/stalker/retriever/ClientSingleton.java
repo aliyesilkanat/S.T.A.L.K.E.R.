@@ -17,7 +17,7 @@ public class ClientSingleton {
 			try {
 				client.start();
 			} catch (Exception e) {
-				getLogger().error("cannot start client", e);
+				getLogger().fatal("cannot start client", e);
 			}
 		}
 		return client;

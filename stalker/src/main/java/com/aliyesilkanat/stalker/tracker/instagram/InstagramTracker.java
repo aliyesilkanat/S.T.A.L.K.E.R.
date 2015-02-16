@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.aliyesilkanat.stalker.data.RDFDataLayer;
+import com.aliyesilkanat.stalker.data.UnfinishedOperationException;
 import com.aliyesilkanat.stalker.endpoint.EndpointUtils;
 import com.aliyesilkanat.stalker.extractor.instagram.InstagramExtractor;
 import com.aliyesilkanat.stalker.retriever.Retriever;
@@ -36,7 +37,7 @@ public class InstagramTracker extends Tracker {
 	}
 
 	@Override
-	public void catchChange() {
+	public void catchChange() throws UnfinishedOperationException {
 		// setting user uri using user ID via Instagram API
 		setUserURI(retrieveUserURI());
 
@@ -69,15 +70,16 @@ public class InstagramTracker extends Tracker {
 	public void send2Storer(String deletedFollowingsJsonArrayString,
 			String jsonLDArray) {
 		new InstagramStorer(jsonLDArray, getUserURI(),
-				deletedFollowingsJsonArrayString).executeFollowingsChange();
+				deletedFollowingsJsonArrayString).execute();
 	}
 
 	/**
 	 * Get followings of {@link InstagramTracker#response} from rdf store.
 	 * 
 	 * @return followings of a person which fetched from rdf store.
+	 * @throws UnfinishedOperationException
 	 */
-	public ResultSet getFollowingsFromRDFStore() {
+	public ResultSet getFollowingsFromRDFStore() throws UnfinishedOperationException {
 		String query = createPersonsFollowingsQuery(getUserURI());
 		ResultSet execSelect = RDFDataLayer.getInstance().execSelect(query);
 		return execSelect;
@@ -224,8 +226,9 @@ public class InstagramTracker extends Tracker {
 	 * Retrieve user uri by using user id field via instagram api.
 	 * 
 	 * @return username uri.
+	 * @throws UnfinishedOperationException
 	 */
-	public String retrieveUserURI() {
+	public String retrieveUserURI() throws UnfinishedOperationException {
 		String msg = "retrieving uri for user {\"userId\":\"%s\"}";
 		getLogger().debug(String.format(msg, getUserId()));
 		String requestDocument = new Retriever().requestDocument(EndpointUtils

@@ -1,12 +1,12 @@
 package com.aliyesilkanat.stalker.storer.relational;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.apache.log4j.Logger;
 
 import com.aliyesilkanat.stalker.data.RelationalDataLayer;
+import com.aliyesilkanat.stalker.data.UnfinishedOperationException;
 
 public abstract class RelationalOperationContext {
 	private final Logger logger = Logger.getLogger(getClass());
@@ -37,7 +37,7 @@ public abstract class RelationalOperationContext {
 	}
 
 	public abstract void executeOperation(Statement statement)
-			throws SQLException;
+			throws UnfinishedOperationException;
 
 	public Logger getLogger() {
 		return logger;

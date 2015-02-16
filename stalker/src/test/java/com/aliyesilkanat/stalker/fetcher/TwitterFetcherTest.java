@@ -16,7 +16,7 @@ public class TwitterFetcherTest {
 
 	@Test
 	public void fetchTest() throws Exception {
-		String response = new TwitterFetcher().requestFollowings(userID);
+		String response = new TwitterFetcher(userID).requestFollowings(userID);
 		String actual = FileUtil.readFile("testHtml\\followingsTwitter.json");
 		System.out.println(response);
 		System.out.println(actual);

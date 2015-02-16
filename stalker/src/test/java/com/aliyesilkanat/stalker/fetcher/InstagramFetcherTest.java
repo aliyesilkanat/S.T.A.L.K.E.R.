@@ -16,7 +16,7 @@ public class InstagramFetcherTest {
 
 	@Before
 	public void before() {
-		fetcher = Mockito.spy(new InstagramFetcher());
+		fetcher = Mockito.spy(new InstagramFetcher("239984780"));
 	}
 
 	@Test

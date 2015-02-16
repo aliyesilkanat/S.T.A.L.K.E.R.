@@ -13,7 +13,7 @@ public class TwitterFollowingsTrigger extends Trigger {
 	public void execute() {
 		String msg = "executing followings trigger {\"userID\":\"%s\"}";
 		getLogger().info(String.format(msg, getUserID()));
-		new TwitterFetcher().fetch(getUserID());
+		new TwitterFetcher(getUserID()).execute();
 		if (getLogger().isTraceEnabled()) {
 			msg = "executed followings trigger {\"userID\":\"%s\"}";
 			getLogger().trace(String.format(msg, getUserID()));

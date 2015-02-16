@@ -5,6 +5,7 @@ import java.util.concurrent.TimeoutException;
 
 import org.apache.log4j.Logger;
 
+import com.aliyesilkanat.stalker.data.UnfinishedOperationException;
 import com.aliyesilkanat.stalker.retriever.ClientSingleton;
 
 public class EndpointUtils {
@@ -34,7 +35,8 @@ public class EndpointUtils {
 		return logger;
 	}
 
-	public String getFollowings(String userId, String nextCursor) {
+	public String getFollowings(String userId, String nextCursor)
+			throws UnfinishedOperationException {
 		String endpointUri = setUriForFetchingFollowings(userId);
 		endpointUri = addParameterToUri(endpointUri, "cursor", nextCursor);
 		String response = "";
@@ -44,6 +46,7 @@ public class EndpointUtils {
 		} catch (InterruptedException | ExecutionException | TimeoutException e) {
 			String msg = "cannot act get method on endpoint {\"uri\":\"%s\"}";
 			getLogger().error(String.format(msg, endpointUri), e);
+			throw new UnfinishedOperationException();
 		}
 		return response;
 	}

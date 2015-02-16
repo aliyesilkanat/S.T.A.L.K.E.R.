@@ -2,11 +2,12 @@ package com.aliyesilkanat.stalker.storer;
 
 import org.apache.log4j.Logger;
 
+import com.aliyesilkanat.stalker.Role;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-public abstract class Storer {
+public abstract class Storer extends Role {
 
 	/**
 	 * JsonLd of added new followings.

@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 
 import virtuoso.jena.driver.VirtGraph;
 
+import com.aliyesilkanat.stalker.data.UnfinishedOperationException;
 import com.aliyesilkanat.stalker.util.DBUtils;
 import com.aliyesilkanat.stalker.util.XSDDateTimeUtil;
 import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
@@ -30,8 +31,10 @@ public class VirtuosoConnector {
 	 *            given {@link Model} instance.
 	 * @param virtGraph
 	 *            graph uri to store given model on it.s
+	 * @throws UnfinishedOperationException
 	 */
-	public void writeModel2Virtuoso(Model model, String graph) {
+	public void writeModel2Virtuoso(Model model, String graph)
+			throws UnfinishedOperationException {
 
 		try {
 
@@ -73,10 +76,12 @@ public class VirtuosoConnector {
 			// log..
 			getLogger().error(
 					"Occured exception while writing model to virtuoso: ", e);
+			throw new UnfinishedOperationException();
 		}
 	}
 
-	public ResultSet execSelect(String query) {
+	public ResultSet execSelect(String query)
+			throws UnfinishedOperationException {
 		String msg;
 		ResultSet selectFromEndpoint = null;
 		try {
@@ -85,14 +90,24 @@ public class VirtuosoConnector {
 		} catch (Exception e) {
 			msg = "error while executing query on endpoint {\"query\":\"%s\"}";
 			getLogger().error(String.format(msg, query), e);
+			throw new UnfinishedOperationException();
 		}
 
 		return selectFromEndpoint;
 	}
 
-	public VirtGraph createVirtGraph(String graphURI) {
-		return new VirtGraph(graphURI, VIRTUOSO_JDBC_CONNECTION,
-				VIRTUOSO_USER_NAME, VIRTUOSO_USER_PASSWORD);
+	public VirtGraph createVirtGraph(String graphURI)
+			throws UnfinishedOperationException {
+		VirtGraph graph = null;
+		try {
+			graph = new VirtGraph(graphURI, VIRTUOSO_JDBC_CONNECTION,
+					VIRTUOSO_USER_NAME, VIRTUOSO_USER_PASSWORD);
+		} catch (Exception e) {
+			String msg = "error while creating virtuoso graph {\"graphUri\":\"%s\"}";
+			getLogger().error(String.format(msg, graphURI), e);
+			throw new UnfinishedOperationException();
+		}
+		return graph;
 	}
 
 	public Logger getLogger() {

@@ -1,8 +1,8 @@
 package com.aliyesilkanat.stalker.storer.friendshipactivity;
 
-import java.sql.SQLException;
 import java.sql.Statement;
 
+import com.aliyesilkanat.stalker.data.UnfinishedOperationException;
 import com.aliyesilkanat.stalker.storer.relational.RelationalOperationContext;
 
 /**
@@ -75,7 +75,8 @@ public class FriendshipActivityMysqlOperation extends
 	}
 
 	@Override
-	public void executeOperation(Statement statement) throws SQLException {
+	public void executeOperation(Statement statement)
+			throws UnfinishedOperationException {
 		operation.execute(statement, data, getUserUri());
 	}
 

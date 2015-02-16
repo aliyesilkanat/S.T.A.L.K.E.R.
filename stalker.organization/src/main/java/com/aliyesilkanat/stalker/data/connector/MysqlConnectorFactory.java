@@ -6,6 +6,8 @@ import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
 
+import com.aliyesilkanat.stalker.data.UnfinishedOperationException;
+
 public class MysqlConnectorFactory {
 	private static final String MYSQL_CONNECTION = "jdbc:mysql://54.213.0.71:3306/stalker";
 	private static final String USER_NAME = "java";
@@ -17,8 +19,9 @@ public class MysqlConnectorFactory {
 	 * Creates connection to mysql database
 	 * 
 	 * @return jdbc connection
+	 * @throws UnfinishedOperationException
 	 */
-	public Connection createConnection() {
+	public Connection createConnection() throws UnfinishedOperationException {
 		String url = MYSQL_CONNECTION;
 		Connection connection = null;
 		try {
@@ -31,6 +34,7 @@ public class MysqlConnectorFactory {
 		} catch (SQLException e) {
 			String msg = "cannot connect database {\"connection\":\"%s\"}";
 			getLogger().error(String.format(msg, MYSQL_CONNECTION), e);
+			throw new UnfinishedOperationException();
 		}
 		return connection;
 	}

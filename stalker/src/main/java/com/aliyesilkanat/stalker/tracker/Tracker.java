@@ -2,6 +2,8 @@ package com.aliyesilkanat.stalker.tracker;
 
 import org.apache.log4j.Logger;
 
+import com.aliyesilkanat.stalker.data.UnfinishedOperationException;
+
 public abstract class Tracker {
 	private final Logger logger = Logger.getLogger(getClass());
 
@@ -19,7 +21,16 @@ public abstract class Tracker {
 		this.setUserId(userId);
 	}
 
-	public abstract void catchChange();
+	public void execute() {
+		try {
+			catchChange();
+		} catch (UnfinishedOperationException e) {
+			String msg = "Unfinished operation, terminating tracker {\"userId\":\"%s\", \"response\":\"%s\"}";
+			getLogger().error(String.format(msg, response));
+		}
+	}
+
+	protected abstract void catchChange() throws UnfinishedOperationException;
 
 	public String getResponse() {
 		return response;
