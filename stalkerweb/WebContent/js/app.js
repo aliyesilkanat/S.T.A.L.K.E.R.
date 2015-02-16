@@ -1,4 +1,5 @@
-var app = angular.module("app", [ "ui.router", "app.homeCtrl" ]);
+var app = angular.module("app", [ "ui.router", "app.homeCtrl",
+		"app.friendshipActivityCtrl" ]);
 app.config([ '$stateProvider', '$urlRouterProvider', '$locationProvider',
 		function($stateProvider, $urlRouterProvider, $locationProvider) {
 
@@ -16,5 +17,10 @@ app.config([ '$stateProvider', '$urlRouterProvider', '$locationProvider',
 			}).state('contact', {
 				url : "/contact",
 				templateUrl : "contact.html"
+			}).state('friendshipactivitylogging', {
+				url : "/friendship-logging",
+				templateUrl : "friendship-logging.html",
+				controller : 'FriendshipActivityController'
+
 			});
 		} ]);

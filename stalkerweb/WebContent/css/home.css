@@ -7,4 +7,19 @@
 	background-color: white;
 	min-height: 300px;
 	padding-top: 100px;
+	filter: blur(2px);
+	-webkit-filter: blur(2px);
+}
+
+.report-img {
+	filter: blur(0.5px);
+	-webkit-filter: blur(0.5px);
+}
+
+.carousel-caption {
+	color: black;
+}
+
+.banner {
+	position: relative;
 }
