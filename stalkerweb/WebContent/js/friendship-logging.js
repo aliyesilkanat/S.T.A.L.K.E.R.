@@ -82,31 +82,63 @@ myApp
 											/ ticks;
 									var tickGap = (xMaxValue - xMinValue)
 											/ ticks;
-									for (i = 1; i < ticks; i++) {
-										xAxis.append("text").attr("x",
-												xScale(i * tickGap)).attr("y",
-												height + 15).attr("fill",
-												xAxisTextColor).text(
-												formatDate(new Date(i
-														* dateTickGap
-														+ startDate)));
+									for (i = 1; i < ticks + 1; i++) {
+										xAxis
+												.append("text")
+												.attr(
+														"x",
+														function() {
+															if (i == ticks)
+																return width;
+															else
+																return xScale(i
+																		* tickGap);
+														})
+												.attr("y", height + 15)
+												.attr("fill", xAxisTextColor)
+												.text(
+														function() {
+															if (i == ticks)
+																return "Time";
+															else
+																return formatDate(new Date(
+																		i
+																				* dateTickGap
+																				+ startDate));
+														});
 									}
 								}
 
 								var createAxisY = function(canvas, ticks) {
 									var yAxis = canvas.append("g");
 									var tickGap = yMaxValue / ticks;
-									for (i = 1; i < ticks; i++) {
+									for (i = 1; i < ticks + 1; i++) {
 										yAxis.append("text").attr("x", 0).attr(
-												"y", yScale(i * tickGap)).text(
-												Math.round(i * tickGap)).attr(
-												"fill", yAxisTextColor);
-										yAxis.append("line").attr("class",
-												"hor-line").attr("x1",
-												outlineSize).attr("x2",
-												outlineSize + width).attr("y1",
-												yScale(i * tickGap)).attr("y2",
-												yScale(i * tickGap));
+												"y",
+												function() {
+													if (i == ticks)
+														return outlineSize / 2;
+													else
+														return yScale(i
+																* tickGap);
+												}).text(function() {
+											if (i == ticks)
+												return "Number of Followings";
+											else
+												return Math.round(i * tickGap);
+										}).attr("fill", yAxisTextColor);
+										if (i != ticks) {
+											yAxis
+													.append("line")
+													.attr("class", "hor-line")
+													.attr("x1", outlineSize)
+													.attr("x2",
+															outlineSize + width)
+													.attr("y1",
+															yScale(i * tickGap))
+													.attr("y2",
+															yScale(i * tickGap));
+										}
 									}
 								}
 
