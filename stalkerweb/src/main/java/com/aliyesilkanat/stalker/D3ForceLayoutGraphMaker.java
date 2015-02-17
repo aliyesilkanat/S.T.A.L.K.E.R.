@@ -13,7 +13,7 @@ import com.google.gson.JsonPrimitive;
  * Class for extracting dependency graphs' json formatted sparql query results
  * into d3js graph format
  */
-public class D3DependencyGraphMaker {
+public class D3ForceLayoutGraphMaker {
 
 	private static final String HOPS = "hops";
 	private static final String HOP_TITLES = "hopTitles";
@@ -25,7 +25,7 @@ public class D3DependencyGraphMaker {
 	private String nodeURI;
 	private String edgeText;
 
-	public D3DependencyGraphMaker(String edgeUri, String edgeText,
+	public D3ForceLayoutGraphMaker(String edgeUri, String edgeText,
 			String nodeUri, String nodeText) {
 		this.edgeURI = edgeUri;
 		this.nodeURI = nodeUri;

@@ -1,10 +1,8 @@
 
-<!DOCTYPE html>
-<html>
 <head>
-<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-<script src="js/friendship-logging.js" charset="utf-8"></script>
-<link href='http://fonts.googleapis.com/css?family=Open+Sans:600' rel='stylesheet' type='text/css'>
+
+<link href='http://fonts.googleapis.com/css?family=Open+Sans:600'
+	rel='stylesheet' type='text/css'>
 <style type="text/css">
 .hor-line {
 	stroke: #336699;
@@ -24,19 +22,4 @@ body {
 </style>
 </head>
 
-<body>
-<script>
-	var startDate = 1423564894000,
-		endDate = 1424428894000,
-		userURI = "http://instagram.com/aliyesilkanat";
-	d3.json("/FriendshipActivityServlet?userURI=" + userURI + "&start_date=" + startDate + "&end_date=" + endDate,
-			function(data){
-				var chart = new LineChart(startDate, endDate, data);
-				chart.createAxes(10, 10);
-				chart.createLineChart("#FF9900");
-		});
-</script>
-</body>
-
-</html>
 
