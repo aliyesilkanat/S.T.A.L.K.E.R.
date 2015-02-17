@@ -1,8 +1,8 @@
 
 <head>
 
-<link href='http://fonts.googleapis.com/css?family=Open+Sans:600'
-	rel='stylesheet' type='text/css'>
+<link href='css/OpenSans600.css' rel='stylesheet' type='text/css'>
+<link href='css/friendship-logging.css' rel="stylesheet" type="text/css">
 <style type="text/css">
 .hor-line {
 	stroke: #336699;
@@ -15,11 +15,30 @@
 	fill: white;
 }
 
-body {
+#friendship-logging {
 	font-family: 'Open Sans', sans-serif;
 	font-size: 15px;
 }
 </style>
 </head>
+<div class="container">
 
+	<div
+		style="padding-top: 20px; color: #000; text-align: center; text-shadow: 0 1px 2px rgba(0, 0, 0, .6);">
+		<p class="lead">
+		<h2>You can see the person's followings' changes over time.</h2>
+		</p>
+		<p class="lead">
+		<h3>Click on the circles to see the details about followings
+			person.</h3>
+		</p>
+	</div>
+
+	<div id="friendship-logging"></div>
+
+	<div class="loading">
+		<div class="sk-spinner sk-spinner-rotating-plane"></div>
+
+	</div>
+</div>
 

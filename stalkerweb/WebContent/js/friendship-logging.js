@@ -1,12 +1,11 @@
 var myApp = angular.module('app.friendshipActivityCtrl', []);
-
 myApp
 		.controller(
 				'FriendshipActivityController',
 				[
 						'$scope',
 						function($scope) {
-
+							// for spinner
 							function LineChart(_startDate, _endDate, _data) {
 
 								var startDate = _startDate;
@@ -22,7 +21,7 @@ myApp
 								var xAxisTextColor = "black";
 								var yAxisTextColor = "grey";
 								var axisStrokeWidth = 2;
-								var width = 1000;
+								var width = 650;
 								var height = 500;
 								var outlineSize = 40;
 								var xScale = null;
@@ -62,10 +61,13 @@ myApp
 									yScale = d3.scale.linear().domain(
 											[ yMinValue, yMaxValue ]).range(
 											[ height, 0 ]);
-									canvas = d3.select("body").append("svg")
-											.attr("width", outlineSize + width)
-											.attr("height",
+									canvas = d3
+											.select("div#friendship-logging")
+											.append("svg").attr("width",
+													outlineSize + width).attr(
+													"height",
 													outlineSize + height);
+									d3.select("div.loading").remove();
 								}
 
 								var createAxisX = function(canvas, ticks) {
