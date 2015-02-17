@@ -32,7 +32,7 @@ myApp
 
 								function formatUserURI(uri) {
 									var arr = uri.split('/');
-									str = arr[arr.length - 1];
+									var str = arr[arr.length - 1];
 									return str.replace('"', '');
 								}
 								function formatDate(date) {
