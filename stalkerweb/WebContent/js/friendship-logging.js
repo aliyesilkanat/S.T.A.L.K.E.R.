@@ -219,7 +219,7 @@ function LineChart(_startDate, _endDate, _data){
 		yAxisTextColor = color;
 	}
 	
-	this.removeChart(chart) {
+	this.removeChart = function(chart) {
 		var chartToBeRemoved;
 		if(chart instanceof int)
 			chartToBeRemoved = charts[chart];
