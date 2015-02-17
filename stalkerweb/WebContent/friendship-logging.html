@@ -29,14 +29,26 @@
 		<h2>You can see the person's followings' changes over time.</h2>
 		</p>
 		<p class="lead">
-		<h3>Click on the circles to see the details about followings
-			person.</h3>
+		<h3 ng-show="loaded==true">Click on the circles to see the
+			details about followings person.</h3>
 		</p>
 	</div>
-
+	<div class="
+			col-lg-6" style="margin-top: 100px;"
+		ng-show="loading==null">
+		<h3>Type instagram user's link here...</h3>
+		<div class="input-group">
+			<input type="text" class="form-control" ng-model="userURI"
+				placeholder="Type instagram user's link here... "> <span
+				class="input-group-btn">
+				<button class="btn btn-default" type="button" ng-click="getReport()">Go!</button>
+			</span>
+		</div>
+		<!-- /input-group -->
+	</div>
 	<div id="friendship-logging"></div>
 
-	<div class="loading">
+	<div class="loading" ng-show="loading!=null">
 		<div class="sk-spinner sk-spinner-rotating-plane"></div>
 
 	</div>

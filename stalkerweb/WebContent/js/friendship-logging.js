@@ -5,7 +5,14 @@ myApp
 				[
 						'$scope',
 						function($scope) {
-							// for spinner
+							$scope.loaded = false;
+							$scope.userURI = "http://instagram.com/";
+							$scope.getReport = function() {
+								$scope.loading = true;
+								console.log($scope.userURI);
+								getReportFromServlet($scope.userURI);
+
+							}
 							function LineChart(_startDate, _endDate, _data) {
 
 								var startDate = _startDate;
@@ -21,7 +28,7 @@ myApp
 								var xAxisTextColor = "black";
 								var yAxisTextColor = "grey";
 								var axisStrokeWidth = 2;
-								var width = 650;
+								var width = 800;
 								var height = 500;
 								var outlineSize = 40;
 								var xScale = null;
@@ -67,7 +74,6 @@ myApp
 													outlineSize + width).attr(
 													"height",
 													outlineSize + height);
-									d3.select("div.loading").remove();
 								}
 
 								var createAxisX = function(canvas, ticks) {
@@ -361,6 +367,10 @@ myApp
 													"hidden")
 											.attr("opacity", 0);
 									charts.push(chart);
+									d3.select("div.loading").remove();
+									$scope.$apply(function() {
+										$scope.loaded = true;
+									})
 									return chart;
 								}
 								this.createAxes = function(xTicks, yTicks) {
@@ -400,13 +410,17 @@ myApp
 										chart.splice(index, 1);
 								}
 							}
-							var startDate = 1423564894000, endDate = 1424428894000, userURI = "http://instagram.com/aliyesilkanat";
-							d3.json("/FriendshipActivityServlet?userURI="
-									+ userURI + "&start_date=" + startDate
-									+ "&end_date=" + endDate, function(data) {
-								var chart = new LineChart(startDate, endDate,
-										data);
-								chart.createAxes(10, 10);
-								chart.createLineChart("#FF9900");
-							});
+							function getReportFromServlet(userUri) {
+								var startDate = 1423564894000, endDate = 1424428894000, userURI = "http://instagram.com/aliyesilkanat";
+								d3.json("/FriendshipActivityServlet?userURI="
+										+ userUri + "&start_date=" + startDate
+										+ "&end_date=" + endDate,
+										function(data) {
+											var chart = new LineChart(
+													startDate, endDate, data);
+											chart.createAxes(10, 10);
+											chart.createLineChart("#FF9900");
+										});
+
+							}
 						} ]);
