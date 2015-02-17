@@ -35,9 +35,16 @@ public class FriendshipActivityServlet extends HttpServlet {
 		String userURI = request.getParameter("userURI");
 		String msg = "requesting followings array {\"userURI\":\"%s\"}";
 		getLogger().debug(String.format(msg, userURI));
-
+		long startTime, endTime;
+		try {
+			startTime = Long.parseLong(request.getParameter("start_date"));
+			endTime = Long.parseLong(request.getParameter("end_date"));
+		} catch (NumberFormatException e) {
+			writeResponse(response, "Please give start_date and end_date parameters");
+			return;
+		}
 		if (userURI != null && !userURI.isEmpty()) {
-			JsonArray array = new FriendshipActivityReporter()
+			JsonArray array = new FriendshipActivityReporter(startTime, endTime)
 					.createReportObject(userURI);
 			msg = "response of followings array {\"userURI\":\"%s\", \"followings\":\"%s\"}";
 			getLogger().info(String.format(msg, userURI, array));

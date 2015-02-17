@@ -1,3 +1,42 @@
-<div class="container" style="text-align: center; margin-top: 400px;">
-	<h2>Will be here soon!</h2>
-</div>
+
+<!DOCTYPE html>
+<html>
+<head>
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<script src="js/friendship-logging.js" charset="utf-8"></script>
+<link href='http://fonts.googleapis.com/css?family=Open+Sans:600' rel='stylesheet' type='text/css'>
+<style type="text/css">
+.hor-line {
+	stroke: #336699;
+	stroke-width: 1;
+	opacity: 0.75;
+}
+
+.dot-circ {
+	stroke-width: 2;
+	fill: white;
+}
+
+body {
+	font-family: 'Open Sans', sans-serif;
+	font-size: 15px;
+}
+</style>
+</head>
+
+<body>
+<script>
+	var startDate = 1423564894000,
+		endDate = 1424428894000,
+		userURI = "http://instagram.com/aliyesilkanat";
+	d3.json("/FriendshipActivityServlet?userURI=" + userURI + "&start_date=" + startDate + "&end_date=" + endDate,
+			function(data){
+				var chart = new LineChart(startDate, endDate, data);
+				chart.createAxes(10, 10);
+				chart.createLineChart("#FF9900");
+		});
+</script>
+</body>
+
+</html>
+
