@@ -2,6 +2,7 @@
 <html>
 <head>
 <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<script src="friendship-logging.js" charset="utf-8"></script>
 <link href='http://fonts.googleapis.com/css?family=Open+Sans:600' rel='stylesheet' type='text/css'>
 <style type="text/css">
 .hor-line {
@@ -24,189 +25,15 @@ body {
 
 <body>
 <script>
-	function formatUserURI(uri){
-		var arr = uri.split('/');
-		str = arr[arr.length - 1];
-		return str.replace('"', '');
-	}
-	var data = null;
-	var yMaxValue = 0;
-	var yMinValue = Number.MAX_VALUE;
-	var xMinValue = 0.0;
-	var xMaxValue = 100.0;
-	var xAxisColor = "gray";
-	var axisStrokeWidth = 2;
-	var width = 1000;
-	var height = 500;
-	var outlineSize = 40;
-	var xScale = null;
-	var yScale = null;
-	
-	d3.json("\FriendshipActivityServlet", function(d){
-			data = d;
-			data.forEach(function(d){
-				if(d.Followings > yMaxValue)
-					yMaxValue = d.Followings;
-			});
-			data.forEach(function(d){
-				if(d.Followings < yMinValue)
-					yMinValue = d.Followings;
-			});
-			yMaxValue += yMaxValue / 10;
-			xScale = d3.scale.linear()
-							.domain([xMinValue,xMaxValue])
-							.range([outlineSize, width + outlineSize]);
-			yScale = d3.scale.linear()
-			.domain([yMinValue, yMaxValue])
-			.range([height, 0]);
-			var canvas = d3.select("body").append("svg").attr("width", outlineSize + width).attr("height", outlineSize + height);
-			createAxisX(canvas, 20);
-			createAxisY(canvas, 10);
-			drawLineChart(canvas, data, "#FF9900");
-	});
-	
-	function createAxisX(canvas, ticks) {
-		var xAxis = canvas.append("g");
-		xAxis.append("line")
-				.attr("x1", xScale(0))
-				.attr("x2", xScale(100))
-				.attr("y1", height)
-				.attr("y2", height)
-				.attr("stroke", xAxisColor)
-				.attr("stroke-width", axisStrokeWidth);
-		var tickGap = xMaxValue/ticks;
-		for(i = 1; i < ticks; i++){
-			xAxis.append("text")
-					.attr("x", xScale(i * tickGap))
-					.attr("y", height + 15)
-					.text(i * tickGap);
-		}
-	}
-	
-	function createAxisY(canvas, ticks) {
-		var yAxis = canvas.append("g");
-		var tickGap = yMaxValue/ticks;
-		for(i = 1; i < ticks; i++){
-			yAxis.append("text")
-					.attr("x", 0)
-					.attr("y", yScale(i * tickGap))
-					.text(Math.round(i * tickGap))
-					.attr("fill", "gray");
-			yAxis.append("line")
-					.attr("class", "hor-line")
-					.attr("x1", outlineSize)
-					.attr("x2", outlineSize + width)
-					.attr("y1", yScale(i * tickGap))
-					.attr("y2", yScale(i * tickGap));
-		}
-	}
-	
-	function drawLineChart(canvas, data, color) {
-		var chart = canvas.append("g");
-		var animDurationMS = 300;
-		chart.selectAll("line")
-				.data(data)
-				.enter()
-				.append("line")
-				.attr("x1", function(d, i){
-					if(i == 0)
-						return 0;
-					return xScale(data[i - 1].TimeScale);
-				})
-				.attr("x2", function(d, i){
-					if(i == 0)
-						return 0;
-					return xScale(data[i - 1].TimeScale);
-				})
-				.attr("y1", function(d, i){
-					if(i == 0)
-						return 0;
-					return yScale(data[i - 1].Followings);
-				})
-				.attr("y2", function(d,i){
-					if(i == 0) return 0;
-					return yScale(data[i - 1].Followings);
-				})
-				.attr("stroke", color)
-				.attr("stroke-width", 3)
-				.transition()
-					.delay(function(d,i){return (i-1) * animDurationMS;})
-					.duration(animDurationMS)
-					.attr("x2", function(d, i){if(i == 0) return 0; else return xScale(d.TimeScale);})
-					.attr("y2", function(d, i){if(i == 0) return 0; else return yScale(d.Followings)});
-		var r = 3;
-		var circleAnimDurationMS = 2000;
-		chart.selectAll("circle")
-				.data(data)
-				.enter()
-				.append("circle")
-				.attr("class", "dot-circ")
-				.attr("stroke", color)
-				.attr("cx", function(d){return xScale(d.TimeScale)})
-				.attr("cy", function(d){return yScale(d.Followings)})
-				.attr("r", r)
-				.on("mouseover", function(){
-					d3.select(this).attr("r",function(){
-						if(d3.select(this).attr("r") > r * 2)
-							return r * 10;
-						else return r * 2;
-					});
-					document.body.style.cursor = 'pointer';
-				})
-				.on("mouseout", function(){
-					d3.select(this).attr("r",function(){
-						if(d3.select(this).attr("r") > r * 2)
-							return r * 10;
-						else return r;
-					});
-					document.body.style.cursor = 'default';
-				})
-				.on("mousedown", function(d,i){
-					canvas.selectAll("g").selectAll("circle")
-							.transition()
-							.duration(circleAnimDurationMS)
-							.attr("r", r);
-					var onlyFadeOut = false;
-					if(d3.select(this).attr("r") > 2 * r){ 
-						d3.select(this).transition().attr("r", r).duration(circleAnimDurationMS);
-						onlyFadeOut = true;
-					}
-					else d3.select(this).transition().attr("r", r * 10).duration(circleAnimDurationMS);
-										
-					var selected = null;
-					chart.selectAll("text").each(function(d, index){
-						if(index == i)
-							selected = this;
-					});
-					if(onlyFadeOut){
-						d3.select(selected).transition()
-											.duration(circleAnimDurationMS * 100)
-												.attr("visibility", "hidden")
-												.attr("opacity", 0);
-						return;
-					}
-					
-					canvas.selectAll("text").filter(function(){return d3.select(this).attr("class") == "info"})
-							.transition()
-							.duration(circleAnimDurationMS * 10)
-								.attr("visibility", function(){return (this == selected) ? "visible" : "hidden";})
-								.attr("opacity", function(){return (this == selected) ? 100 : 0;});
-				});
-		chart.selectAll("text")
-				.data(data)
-				.enter()
-				.append("text")
-				.attr("class", "info")
-				.attr("text-anchor", "middle")
-				.attr("x", function(d){return xScale(d.TimeScale)})
-				.attr("y", function(d){return yScale(d.Followings) + 5})
-				.text(function(d, i){
-					return formatUserURI(JSON.stringify(d.UserUri));
-				})
-				.attr("visibility", "hidden")
-				.attr("opacity", 0);
-	}
-
+	var startDate = 1423564894000,
+		endDate = 1424428894000,
+		userURI = "http://instagram.com/aliyesilkanat";
+	d3.json("/FriendshipActivityServlet?userURI=" + userURI + "&start_date=" + startDate + "&end_date=" + endDate,
+			function(data){
+				var chart = new LineChart(startDate, endDate, data);
+				chart.createAxes(10, 10);
+				chart.createLineChart("#FF9900");
+		});
 </script>
 </body>
 
