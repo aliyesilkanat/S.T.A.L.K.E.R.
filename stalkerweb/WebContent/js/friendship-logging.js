@@ -204,7 +204,7 @@ myApp
 												else
 													return yScale(d.Followings)
 											});
-									var r = 3;
+									var r = 10;
 									var circleAnimDurationMS = 2000;
 									chart
 											.selectAll("circle")

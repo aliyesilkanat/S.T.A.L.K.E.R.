@@ -18,6 +18,7 @@
 #friendship-logging {
 	font-family: 'Open Sans', sans-serif;
 	font-size: 15px;
+	float: left;
 }
 </style>
 </head>
@@ -46,7 +47,24 @@
 		</div>
 		<!-- /input-group -->
 	</div>
-	<div id="friendship-logging"></div>
+	<div class="row">
+		<div id="friendship-logging"></div>
+		<div class="col-md-3" ng-show="loaded==true">
+			<ul class="list-group"
+				style="margin-top: 50px; margin-left: 30px; margin-right: -10px;">
+				<li class="list-group-item list-group-item-success"><span
+					class="badge">14</span> Recent following additions</li>
+				<li class="list-group-item "><span class="badge">14</span>-</li>
+			</ul>
+
+			<ul class="list-group"
+				style="margin-top: 50px; margin-left: 30px; margin-right: -10px;">
+				<li class="list-group-item list-group-item-danger"><span
+					class="badge">14</span> Recent following deletions</li>
+				<li class="list-group-item "><span class="badge">14</span>-</li>
+			</ul>
+		</div>
+	</div>
 
 	<div class="loading" ng-show="loading!=null">
 		<div class="sk-spinner sk-spinner-rotating-plane"></div>
