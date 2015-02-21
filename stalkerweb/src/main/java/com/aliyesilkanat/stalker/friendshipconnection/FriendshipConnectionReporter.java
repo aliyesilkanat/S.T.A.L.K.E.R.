@@ -1,9 +1,5 @@
 package com.aliyesilkanat.stalker.friendshipconnection;
 
-
-
-import java.util.ArrayList;
-
 import org.apache.log4j.Logger;
 
 import com.aliyesilkanat.stalker.data.RDFDataLayer;
@@ -11,6 +7,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
+
 
 public class FriendshipConnectionReporter {
 	
@@ -21,12 +18,17 @@ public class FriendshipConnectionReporter {
 		return logger;
 	}
 	
-	public String FollowingQuery(){
+	
+	
+	public String FollowingQuery(String useruri){
 		StringBuilder query= new StringBuilder();
 		query.append("PREFIX schema: <http://schema.org/>");
 		query.append("select * where");
 		query.append("{");
-		query.append("?s schema:follows ?o");
+		query.append("<");
+		query.append(useruri);
+		query.append(">");
+		query.append(" schema:follows ?o");
 		query.append("}");
 		
 		return query.toString();
@@ -34,18 +36,18 @@ public class FriendshipConnectionReporter {
 	
 	
 	public JsonObject createReportObject(String userURI) {	
-		JsonObject followingsArray = extractsResultsFromGraphToJsonObject(FollowingQuery());
-		return followingsArray;
+		JsonObject followingsObject = extractsResultsFromGraphToJsonObject(FollowingQuery(userURI),userURI);
+		return followingsObject;
 
 	}
 	
-	private JsonObject extractsResultsFromGraphToJsonObject(String query) {
+	private JsonObject extractsResultsFromGraphToJsonObject(String query,String userURI) {
 		String msg;
 		JsonObject graph=null;
 		
 		try {
 			ResultSet execSelect = RDFDataLayer.getInstance().execSelect(query);
-			graph=traverseResultSet(execSelect);
+			graph=traverseResultSet(execSelect,userURI);
 		} catch (Exception e) {
 			msg = "cannot execute sparql query {\"query\":\"%s\"}";
 			getLogger().error(String.format(msg, query));
@@ -55,92 +57,63 @@ public class FriendshipConnectionReporter {
 	}
 	
 	  
-	  private JsonObject fillJsonObjectWithLinks(QuerySolution next,JsonArray relation)
+	  private JsonObject fillJsonObjectWithLinks(int i)
 	  {
-		  JsonObject followingObject = new JsonObject();
-		  String uri=extractUserUri(next);
-		  String uri2=extractfollowingsUri(next);
-		  		 
+		  JsonObject followingLink = new JsonObject();
+            
+			  followingLink.addProperty("source", 0);
+			  followingLink.addProperty("target", i);
+			  followingLink.addProperty("value", 1);
 		  
-		  followingObject.addProperty("source", indexJsonObject(uri, relation));
-		  followingObject.addProperty("target", indexJsonObject(uri2, relation));
-		  followingObject.addProperty("value", 1);
+		  return followingLink;
 		  
-		  return followingObject;
 	  }
 	  
-	  private int indexJsonObject(String uri ,JsonArray nodes)
-	  {
-		  for(int i=0;i<nodes.size();i++) {
-			    String s=nodes.get(i).getAsJsonObject().get("UserUri").toString();
-	            if(uri.equals(s.substring(1, s.length()-1))) {
-	                return i;
-	            }
-	        }
-		return 0;
-	  }
-		
     
-		private JsonObject traverseResultSet(ResultSet resultSet)
+		private JsonObject traverseResultSet(ResultSet resultSet,String userURI)
 		{
-			JsonArray followingsArray;
-			followingsArray = new JsonArray();
-			
+			int i=1;
+			JsonArray nodes= new JsonArray();
 			JsonArray links=new JsonArray();
-			ArrayList<String> c= new ArrayList<String>();
-			
 			JsonObject graph=new JsonObject();
+			
+			nodes.add(fillJsonObjectWithUserUriNode(userURI));
 			while (resultSet.hasNext()) {
 				QuerySolution next = resultSet.next();
 	            
-				if(!c.contains(extractUserUri(next)))
-				followingsArray.add(fillJsonObjectWithResult(next));
-				
-				if(!c.contains(extractfollowingsUri(next)))
-				followingsArray.add(fillJsonObectWithResultRelation(next));
-				
-				c.add(extractUserUri(next));
-				c.add(extractfollowingsUri(next));
-				
-				links.add(fillJsonObjectWithLinks(next, followingsArray));
-				
-			} 
-			graph.add("nodes", followingsArray);
+			    nodes.add(fillJsonObjectWithNode(next));
+			    links.add(fillJsonObjectWithLinks(i));
+				i++;
+			}
+			
+			graph.add("nodes", nodes);
 			graph.add("links", links);
 			return graph; 
 		}
 		
-		private JsonObject fillJsonObjectWithResult(QuerySolution resultSet)
+		private JsonObject fillJsonObjectWithUserUriNode(String useruri)
 		{
-			JsonObject followingObject = new JsonObject();
-			String uri= extractUserUri(resultSet);
+			JsonObject followingNode = new JsonObject();
+			
+			followingNode.addProperty("UserUri", useruri);
+		    followingNode.addProperty("group" , 1);
+		    
+		    return followingNode;
+		}
+		
+		private JsonObject fillJsonObjectWithNode(QuerySolution solution)
+		{
+			JsonObject followingNode = new JsonObject();
+			String uri= extractUserUri(solution);
 				
+				followingNode.addProperty("UserUri", uri);
+			    followingNode.addProperty("group" , 2);
 			
-				followingObject.addProperty("UserUri", uri);
-			    followingObject.addProperty("group" , 1);
-		
-					
-			return followingObject;
+			return followingNode;
 		}
 		
-		private JsonObject fillJsonObectWithResultRelation(QuerySolution resultSet)
-		{
-			JsonObject followingObject = new JsonObject();	
-			String uri2 = extractfollowingsUri(resultSet);
-			
-				followingObject.addProperty("UserUri", uri2);
-				followingObject.addProperty("group" , 2);
-		
-			return followingObject;
+		private String extractUserUri(QuerySolution solution)  {
+			return solution.get("o").toString();
 		}
-		
-		private String extractUserUri(QuerySolution resultSet)  {
-			return resultSet.get("s").toString();
-		}
-		
-		private String extractfollowingsUri(QuerySolution resultSet) {
-			return resultSet.get("o").toString();
-		}
-
 
 }
