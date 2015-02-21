@@ -10,7 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
-import com.google.gson.JsonArray;
+import com.aliyesilkanat.stalker.data.UnfinishedOperationException;
+import com.google.gson.JsonObject;
 
 /**
  * Servlet implementation class FriendshipActivityServlet
@@ -44,11 +45,15 @@ public class FriendshipActivityServlet extends HttpServlet {
 			return;
 		}
 		if (userURI != null && !userURI.isEmpty()) {
-			JsonArray array = new FriendshipActivityReporter(startTime, endTime)
-					.createReportObject(userURI);
-			msg = "response of followings array {\"userURI\":\"%s\", \"followings\":\"%s\"}";
-			getLogger().info(String.format(msg, userURI, array));
-			writeResponse(response, array.toString());
+			try {
+				JsonObject result = new FriendshipActivityReporter(startTime, endTime)
+						.createReportObject(userURI);
+				msg = "response of followings array {\"userURI\":\"%s\", \"followings\":\"%s\"}";
+				getLogger().info(String.format(msg, userURI, result));
+				writeResponse(response, result.toString());
+			} catch (UnfinishedOperationException e) {
+				getLogger().error("Error while creating report", e);
+			}
 		} else {
 			writeResponse(response, "Please give userURI parameter");
 		}
@@ -68,7 +73,7 @@ public class FriendshipActivityServlet extends HttpServlet {
 		response.setCharacterEncoding("UTF-8");
 		response.setContentType("application/json; charset=UTF-8");
 		response.addHeader("Access-Control-Allow-Origin", "*");
-		response.getWriter().write(d3GraphAsJson);
+		response.getWriter().print(d3GraphAsJson);
 		response.getWriter().flush();
 	}
 
