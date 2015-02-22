@@ -162,4 +162,10 @@ public class InstagramFetcher extends Fetcher {
 				JsonObject.class);
 		return apiResultJsonObject;
 	}
+
+	@Override
+	public void onReceive(Object arg0) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
 }

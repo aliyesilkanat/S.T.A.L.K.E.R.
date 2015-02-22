@@ -19,7 +19,6 @@ public class TwitterFetcher extends Fetcher {
 	/**
 	 * @author Iþýk Erhan & Ali Yesilkanat
 	 */
-
 	private static final String consumerKey = "OD0R13BiOyq38jgxxFDxSoXoZ";
 	private static final String consumerSecret = "WXq4FY7C7P1Rk1coTdTsdT8wgGCyaAXHapZ0prAK5fuq3M2T6i";
 	private static final String accessToken = "18263321-ZKQRWyQTvcYikOO6kDNW0zLBNPjFoTKlR9wVgOSXR";
@@ -87,6 +86,12 @@ public class TwitterFetcher extends Fetcher {
 		} while ((cursor = friends.getNextCursor()) != 0);
 
 		return friendsJson.toString();
+	}
+
+	@Override
+	public void onReceive(Object arg0) throws Exception {
+		// TODO Auto-generated method stub
+
 	}
 
 }

@@ -19,28 +19,28 @@ import com.google.gson.JsonObject;
 public class FriendshipConnectionServlet extends HttpServlet {
 	private final Logger logger = Logger.getLogger(getClass());
 	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public FriendshipConnectionServlet() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#HttpServlet()
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		
+	public FriendshipConnectionServlet() {
+		super();
+	}
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	protected void doGet(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+
 		String userURI = request.getParameter("userURI");
 		String msg = "requesting followings array {\"userURI\":\"%s\"}";
 		getLogger().debug(String.format(msg, userURI));
-		
-		
+
 		if (userURI != null && !userURI.isEmpty()) {
-			JsonObject object = new FriendshipConnectionReporter().createReportObject(userURI);
+			JsonObject object = new FriendshipConnectionReporter()
+					.createReportObject(userURI);
 			msg = "response of followings array {\"userURI\":\"%s\", \"followings\":\"%s\"}";
 			getLogger().info(String.format(msg, userURI, object));
 			writeResponse(response, object.toString());
@@ -48,7 +48,7 @@ public class FriendshipConnectionServlet extends HttpServlet {
 			writeResponse(response, "Please give userURI parameter");
 		}
 	}
-	
+
 	private void writeResponse(HttpServletResponse response,
 			String d3GraphAsJson) throws IOException {
 		response.setCharacterEncoding("UTF-8");
@@ -58,13 +58,6 @@ public class FriendshipConnectionServlet extends HttpServlet {
 		response.getWriter().flush();
 	}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-	}
-	
 	public Logger getLogger() {
 		return logger;
 	}

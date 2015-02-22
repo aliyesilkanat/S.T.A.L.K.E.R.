@@ -2,6 +2,8 @@ package com.aliyesilkanat.stalker;
 
 import org.apache.log4j.Logger;
 
+import akka.actor.UntypedActor;
+
 import com.aliyesilkanat.stalker.data.UnfinishedOperationException;
 import com.aliyesilkanat.stalker.extractor.Extractor;
 import com.aliyesilkanat.stalker.retriever.Retriever;
@@ -15,7 +17,8 @@ import com.aliyesilkanat.stalker.retriever.Retriever;
  *         triggered session would have been terminated.
  *
  */
-public abstract class Role {
+public abstract class Role extends UntypedActor {
+
 	/**
 	 * Logger instance
 	 */

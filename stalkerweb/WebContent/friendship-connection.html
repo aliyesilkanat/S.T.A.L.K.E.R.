@@ -1,36 +1,64 @@
-<!DOCTYPE html>
-<meta charset="utf-8">
-
 <head>
-<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
-<script type='text/javascript' src="http://code.jquery.com/ui/1.11.3/jquery-ui.min.js"> </script>
-<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
-<script src="http://d3js.org/d3.v3.min.js"></script>
-</head>
 <style>
-
 .node {
-  stroke: #fff;
-  stroke-width: 1.5px;
+	stroke: #fff;
+	stroke-width: 1.5px;
+	cursor: pointer;
 }
 
 .link {
-  stroke: #999;
-  stroke-opacity: .6;
+	stroke: #999;
+	stroke-opacity: .6;
 }
 
-
+text {
+	font: 10px sans-serif;
+	pointer-events: none;
+	text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, 0 -1px 0 #fff, -1px 0 0 #fff;
+}
 </style>
-<body>
+<link href='css/spinner.css' rel="stylesheet" type="text/css">
+</head>
+<div class="container">
 
-<div class="ui-widget">
-   <input id="search">
-    <button type="button" onclick="searchNode()">Search</button>
+	<div
+		style="padding-top: 20px; color: #000; text-align: center; text-shadow: 0 1px 2px rgba(0, 0, 0, .6);">
+		<p class="lead">
+		<h2>You can see the person's followings' in graph layout.</h2>
+		</p>
+		<p class="lead">
+		<h3 ng-show="loaded==true">Click on the circles to see the
+			details about followings person.</h3>
+		</p>
+	</div>
+	<div class="
+			col-lg-6" style="margin-top: 100px;"
+		ng-show="loading==null">
+		<h3>Type instagram user's link here...</h3>
+		<div class="input-group">
+			<input type="text" class="form-control" ng-model="userURI"
+				placeholder="Type instagram user's link here... "> <span
+				class="input-group-btn">
+				<button class="btn btn-default" type="button" ng-click="getReport()">Go!</button>
+			</span>
+		</div>
+		<!-- /input-group -->
+	</div>
+	<div class="row">
+		<div id="friendship-connection" class="col-md-10"></div>
+		<div class="col-md-2">
+			<div class="panel panel-default">
+				<div class="panel-body">
+					<img class="img-circle" ng-src="{{userImage || '//:0' }}"
+						style="width: 140px; height: 140px;">
+					<h2>{{userName}}</h2>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="loading" ng-show="loading==true">
+		<div class="sk-spinner sk-spinner-rotating-plane"></div>
+
+	</div>
 </div>
-
-<form>
-    <h3> Breaking Link 0 <input type="range" id="thersholdSlider" name="points" value = 0 min="0" max="100" onchange="threshold(this.value)"> 100 </h3>
-</form>
-<script src="js/friendshipConnection.js"></script>
-
-</body>
