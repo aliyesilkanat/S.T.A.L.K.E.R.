@@ -1,3 +1,36 @@
-<div class="container" style="text-align: center; margin-top: 400px;">
-	<h2>Will be here soon!</h2>
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<head>
+<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+<script type='text/javascript' src="http://code.jquery.com/ui/1.11.3/jquery-ui.min.js"> </script>
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
+<script src="http://d3js.org/d3.v3.min.js"></script>
+</head>
+<style>
+
+.node {
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+
+.link {
+  stroke: #999;
+  stroke-opacity: .6;
+}
+
+
+</style>
+<body>
+
+<div class="ui-widget">
+   <input id="search">
+    <button type="button" onclick="searchNode()">Search</button>
 </div>
+
+<form>
+    <h3> Breaking Link 0 <input type="range" id="thersholdSlider" name="points" value = 0 min="0" max="100" onchange="threshold(this.value)"> 100 </h3>
+</form>
+<script src="js/friendshipConnection.js"></script>
+
+</body>
