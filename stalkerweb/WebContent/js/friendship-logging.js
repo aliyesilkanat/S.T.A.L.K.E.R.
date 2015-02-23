@@ -1,3 +1,5 @@
+var dateSeperator = '.';
+var _dateFormat = 'dd' + dateSeperator + 'mm' + dateSeperator + 'yyyy';
 var myApp = angular.module('app.friendshipActivityCtrl', []);
 myApp
 		.controller(
@@ -7,12 +9,36 @@ myApp
 						function($scope) {
 							$scope.loaded = false;
 							$scope.userURI = "http://instagram.com/";
+							$scope.startDate = null;
+							$scope.endDate = null;
 							$scope.getReport = function() {
+								if(!checkInputValidity($scope.startDate, $scope.endDate))
+									return;
 								$scope.loading = true;
-								console.log($scope.userURI);
-								getReportFromServlet($scope.userURI);
-
+								getReportFromServlet($scope.userURI, $scope.startDate.getTime(), $scope.endDate.getTime());
 							}
+							function checkInputValidity(startDate, endDate){
+								var msg = null;
+								console.debug(startDate, typeof startDate);
+								if(startDate == null || endDate == null)
+									msg = "Start date and end date fields both must be filled";
+								else if(startDate.getTime() >= endDate.getTime())
+									msg = "End date must be greater than start date";
+								if(msg != null){
+									msg += "!";
+									var obj = $('#error-alert').text(msg);
+									obj.css('visibility','visible');
+									return false;
+								}
+								else return true;
+							}
+							
+							function formatUserURI(uri) {
+								var arr = uri.split('/');
+								var str = arr[arr.length - 1];
+								return str.replace('"', '');
+							}
+							
 							function LineChart(_startDate, _endDate, _data) {
 
 								var startDate = _startDate;
@@ -37,15 +63,10 @@ myApp
 
 								init(_data);
 
-								function formatUserURI(uri) {
-									var arr = uri.split('/');
-									var str = arr[arr.length - 1];
-									return str.replace('"', '');
-								}
 								function formatDate(date) {
-									var out = (date.getDate() + 1) + "."
-											+ (date.getMonth() + 1);
-									return out.toString();
+									var out = date.format(_dateFormat);
+									var arr = out.split(dateSeperator);
+									return arr[0] + dateSeperator + arr[1];
 								}
 
 								function init(_data) {
@@ -204,7 +225,7 @@ myApp
 												else
 													return yScale(d.Followings)
 											});
-									var r = 10;
+									var r = 3;
 									var circleAnimDurationMS = 2000;
 									chart
 											.selectAll("circle")
@@ -410,17 +431,56 @@ myApp
 										chart.splice(index, 1);
 								}
 							}
-							function getReportFromServlet(userUri) {
-								var startDate = 1423564894000, endDate = 1424428894000, userURI = "http://instagram.com/aliyesilkanat";
+							function insertRecentActivities(followings, unfollowings){
+								$('#recent-followings .badge').text(followings.length);
+								var followingsList = $('#recent-followings');
+								followings.forEach(function(d){
+									followingsList.append('<li class="list-group-item "><strong>' +  formatUserURI(d.userURI) +'</strong></li>');									
+								});
+								
+								$('#recent-unfollowings .badge').text(unfollowings.length);
+								var unfollowingsList = $('#recent-unfollowings');
+								unfollowings.forEach(function(d){
+									unfollowingsList.append('<li class="list-group-item "><strong>' +  formatUserURI(d.userURI) +'</strong></li>');									
+								});
+							}
+							
+							function getReportFromServlet(userUri, startDate, endDate) {
 								d3.json("/FriendshipActivityServlet?userURI="
 										+ userUri + "&start_date=" + startDate
 										+ "&end_date=" + endDate,
 										function(data) {
+											console.debug(data);
+											insertRecentActivities(data.recentFollowings, data.recentUnfollowings)
 											var chart = new LineChart(
-													startDate, endDate, data);
+													startDate, endDate, data.followings);
 											chart.createAxes(10, 10);
 											chart.createLineChart("#FF9900");
 										});
-
 							}
 						} ]);
+	
+       myApp.directive('datetimepicker', function(){
+		   	return {
+		   		restrict: 'A',
+		   		require: 'ngModel',
+		   		link: function(scope, element, attrs, ngModelCtrl){
+		   			console.debug(scope);
+		   			element.datepicker({
+		   				format: _dateFormat,
+		   			})
+		   			.on("changeDate", function(evArg){
+		   				var targetName = evArg.target.name;
+		   				var date = evArg.date;
+		   				date.toString = function(){
+		   					return this.format(_dateFormat);
+		   				}
+		   				if(targetName == "start")
+		   					scope.startDate = date;
+		   				else if(targetName == "end") scope.endDate = date;
+	   					console.debug(scope);
+		   				scope.$apply();
+		   			});
+		   		}
+		   	}
+		   });
