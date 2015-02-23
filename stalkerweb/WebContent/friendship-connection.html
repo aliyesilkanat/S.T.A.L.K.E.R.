@@ -44,14 +44,24 @@ text {
 		</div>
 		<!-- /input-group -->
 	</div>
+	<div class="row" ng-show="loaded==true">
+		<h3>Type instagram user names' here to filter nodes...</h3>
+		<div class="input-group">
+			<input type="text" class="form-control" ng-change="filterNodes()"
+				ng-model="filterUserName"
+				placeholder="Type instagram user's link here... ">
+		</div>
+	</div>
 	<div class="row">
 		<div id="friendship-connection" class="col-md-10"></div>
-		<div class="col-md-2">
+		<div class="col-md-2" ng-show="loaded==true">
 			<div class="panel panel-default">
 				<div class="panel-body">
-					<img class="img-circle" ng-src="{{userImage || '//:0' }}"
+					<a target="_blank" href="{{selectedUserURI}}"> <img
+						class="img-circle" ng-src="{{userImage || '//:0' }}"
 						style="width: 140px; height: 140px;">
-					<h2>{{userName}}</h2>
+						<h2>{{userName}}</h2>
+					</a>
 				</div>
 			</div>
 		</div>

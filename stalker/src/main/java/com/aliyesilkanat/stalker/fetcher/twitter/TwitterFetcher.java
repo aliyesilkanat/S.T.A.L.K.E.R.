@@ -88,10 +88,4 @@ public class TwitterFetcher extends Fetcher {
 		return friendsJson.toString();
 	}
 
-	@Override
-	public void onReceive(Object arg0) throws Exception {
-		// TODO Auto-generated method stub
-
-	}
-
 }

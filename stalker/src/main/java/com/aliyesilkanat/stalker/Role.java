@@ -17,7 +17,7 @@ import com.aliyesilkanat.stalker.retriever.Retriever;
  *         triggered session would have been terminated.
  *
  */
-public abstract class Role extends UntypedActor {
+public abstract class Role {
 
 	/**
 	 * Logger instance
