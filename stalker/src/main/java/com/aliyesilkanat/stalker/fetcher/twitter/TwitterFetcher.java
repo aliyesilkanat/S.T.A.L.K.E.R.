@@ -84,7 +84,8 @@ public class TwitterFetcher extends Fetcher {
 			}
 			// has more page to fetch?
 		} while ((cursor = friends.getNextCursor()) != 0);
-
+		String msg = "fetched followings of twitter user {\"userId\":\"%s\", \"followingsArray\":\"%s\"}";
+		getLogger().trace(String.format(msg, userId, friendsJson));
 		return friendsJson.toString();
 	}
 
