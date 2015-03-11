@@ -1,5 +1,6 @@
 var app = angular.module("app", [ "ui.router", "app.homeCtrl",
-		"app.friendshipActivityCtrl", "app.friendshipConnectionCtrl" ]);
+		"app.friendshipActivityCtrl", "app.friendshipConnectionCtrl",
+		"app.loginCtrl" ]);
 app.config([ '$stateProvider', '$urlRouterProvider', '$locationProvider',
 		function($stateProvider, $urlRouterProvider, $locationProvider) {
 
@@ -25,6 +26,11 @@ app.config([ '$stateProvider', '$urlRouterProvider', '$locationProvider',
 				url : "/friendship-connection",
 				templateUrl : "friendship-connection.html",
 				controller : "FriendshipConnectionController"
+
+			}).state('login', {
+				url : "/login",
+				templateUrl : "login.html",
+				controller : "LoginController"
 
 			});
 		} ]);
