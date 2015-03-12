@@ -25,7 +25,7 @@ public class JsonObjectAdapter implements Data {
 
 	@Override
 	public void setAttribute(String attributeName, Object value) {
-		
+		object.put(attributeName, value.toString());
 	}
 
 }

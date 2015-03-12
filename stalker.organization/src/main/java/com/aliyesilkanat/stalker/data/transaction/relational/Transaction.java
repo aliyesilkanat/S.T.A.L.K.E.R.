@@ -2,11 +2,13 @@ package com.aliyesilkanat.stalker.data.transaction.relational;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Savepoint;
+
+import org.apache.log4j.Logger;
 
 public abstract class Transaction {
 	protected Connection conn;
 	protected DataSet dataSet;
+	private final Logger logger = Logger.getLogger(this.getClass());
 	public Transaction(Connection conn, DataSet dataSet) {
 		this.conn = conn;
 		this.dataSet = dataSet;
@@ -19,17 +21,21 @@ public abstract class Transaction {
 	 */
 		
 	public final void execute() throws SQLException {
-		Savepoint savePoint = conn.setSavepoint();
 		conn.setAutoCommit(false);
 		try{
 			operation();
 			conn.commit();
 		} catch(SQLException e){
-				conn.rollback(savePoint);
+				System.err.println(e.getMessage());
+				conn.rollback();
 		} finally{
 			if(conn != null)
 				conn.close();
 		}
+	}
+	
+	public final Logger getLogger(){
+		return logger;
 	}
 	
 	protected abstract void operation() throws SQLException;
