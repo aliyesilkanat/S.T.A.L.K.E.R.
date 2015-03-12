@@ -10,9 +10,9 @@ import org.apache.jena.atlas.json.JsonValue;
 
 public class JsonArrayAdapter implements DataSet{
 	
-	ArrayList<Data> data;
-	ArrayList<String> attributeNames;
-	String relationName;
+	private ArrayList<Data> data;
+	private ArrayList<String> attributeNames;
+	private String relationName;
 	/**
 	 * 
 	 * @param array JsonArray to be adapted
